@@ -2,6 +2,10 @@
 import java.util.Scanner;
 //for date and time
 import java.time.LocalDateTime;
+//for writing into files
+import java.io.FileWriter;
+//for handling file writing error
+import java.io.IOException;
 
 public class PoultryFarmManagementSystem{
 	//Object declared static so in can be accessable for all methods
@@ -9,10 +13,89 @@ public class PoultryFarmManagementSystem{
 	//This object is for the present time
 	static LocalDateTime now = LocalDateTime.now();
 	static boolean isConfirm=false;
-	private static void credentials(){
-		//Arrays that would store user's login data
+	static int sn;
+	static String firstName;
+	static String lastName;
+	static String fullName;
+	static String userName;
+	static int pin;
+	
+	private static int encrypt(int pin){
+		int valid=0;
+		int d4=0;
+		int d3=0;
+		int d2=0;
+		int d1=0;
 		
+		while (valid==0){
+			int num = pin;
+			int length = String.valueOf(num).length();
+			
+			if (length!=4){
+				System.out.println("Invalid Input");
+			}
+			else{
+				d4=num%10;
+				d3=(num/10)%10;
+				d2=(num/100)%10;
+				d1=(num/1000)%10;
+				
+				d1=(d1+7)%10;
+				d2=(d2+7)%10;
+				d3=(d3+7)%10;
+				d4=(d4+7)%10;
+				
+				d1+=d3;
+				d3=d1-d3;
+				d1-=d3;
+				
+				d2+=d4;
+				d4=d2-d4;
+				d2-=d4;
+			}
+		}
+		int encryptedPin = (d1*1000)+(d2*100)+(d3*10)+d4;
+		return encryptedPin;
 	}
+	private static int decrypt(int ePin){
+		int valid=0;
+		int d4=0;
+		int d3=0;
+		int d2=0;
+		int d1=0;
+		
+		while (valid==0){
+			int eNum = ePin;
+			
+			int length = String.valueOf(eNum).length();
+			
+			if (length!=4){
+				System.out.println("Invalid Input");
+			}
+			else{
+				d4=eNum%10;
+				d3=(eNum/10)%10;
+				d2=(eNum/100)%10;
+				d1=(eNum/1000)%10;
+				
+				d1+=d3;
+				d3=d1-d3;
+				d1-=d3;
+				
+				d2+=d4;
+				d4=d2-d4;
+				d2-=d4;
+				
+				d1=(d1+3)%10;
+				d2=(d2+3)%10;
+				d3=(d3+3)%10;
+				d4=(d4+3)%10;
+			}
+		}
+		int decryptedPin = (d1*1000)+(d2*100)+(d3*10)+d4;
+		return decryptedPin;
+	}
+	
 	public static String center(String s,double x){
 		double padding = (x-s.length())/2;
 		return " ".repeat((int)padding)+s+" ".repeat((int)padding);
@@ -38,7 +121,49 @@ public class PoultryFarmManagementSystem{
 		//confirming input
 		if (confirm=='y'){
 			clearScreen();
-			System.out.println("Saving. . . . .");
+			System.out.println("Saving . . .\nSaved.");
+			clearScreen();
+			isConfirm=true	;	
+		}
+		else if(confirm=='n'){
+			clearScreen();
+			System.out.print(". . .");
+			clearScreen();
+			isConfirm=false;
+		}
+		return isConfirm;
+	}
+	public static boolean confirm(String x){
+		clearScreen();
+		System.out.print("Confirm \""+x+" \"(Y,N)?");
+		char confirm=read.next().charAt(0);
+		//change character to lowercase.
+		confirm=Character.toLowerCase(confirm);
+		//confirming input
+		if (confirm=='y'){
+			clearScreen();
+			System.out.println("Saving . . .\nSaved.");
+			clearScreen();
+			isConfirm=true	;	
+		}
+		else if(confirm=='n'){
+			clearScreen();
+			System.out.print(". . .");
+			clearScreen();
+			isConfirm=false;
+		}
+		return isConfirm;
+	}
+	public static boolean confirm(int x){
+		clearScreen();
+		System.out.print("Confirm \""+x+" \"(Y,N)?");
+		char confirm=read.next().charAt(0);
+		//change character to lowercase.
+		confirm=Character.toLowerCase(confirm);
+		//confirming input
+		if (confirm=='y'){
+			clearScreen();
+			System.out.println("Saving . . .\nSaved.");
 			clearScreen();
 			isConfirm=true	;	
 		}
@@ -51,10 +176,9 @@ public class PoultryFarmManagementSystem{
 		return isConfirm;
 	}
 	public static void todayData(){
-		/*int date=stamp.getDate();
-		String addedBy=fullName;
-		String addedAt= now;
-		isConfirm=false;*/
+		/*String addedBy=fullName;*/
+		String addedAt= now.toString();
+		isConfirm=false;
 		while(isConfirm==false){
 			System.out.print("Input number of Eggs: "); 
 			double eggNo = read.nextInt();
@@ -76,8 +200,36 @@ public class PoultryFarmManagementSystem{
 	public static void home(){}
 	public static void recordEdit(){}
 	public static void eggGraph(){}
-	public static void register(){}
-	public static void login(){}
+	public static void register(){	}
+	public static void login(){
+		while (isConfirm==false){
+			read.nextLine();   // IMPORTANT! Fixes blank input problem, CLEARS INPUT BUFFER
+			System.out.print("First Name:");
+			firstName=read.nextLine();
+			confirm(firstName); 
+		}
+		isConfirm=false;
+		while (isConfirm==false){
+			read.nextLine();
+			System.out.print("Last Name:");
+			lastName=read.nextLine();
+			confirm(lastName);
+		}
+		isConfirm=false;
+		while(isConfirm==false){
+			read.nextLine();
+			System.out.print("User Name:");
+			userName=read.nextLine();
+			confirm(userName);
+		}
+		isConfirm=false;
+		while (isConfirm==false){
+			System.out.print("Pin (4 digits):");
+			pin=read.nextInt();
+			confirm(pin);
+		}
+		isConfirm=false;
+	}
 	public static void startupPage(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(center("Poultry Farm Management System",50)+"\n");
