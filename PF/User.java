@@ -1,0 +1,48 @@
+package PF;
+import PF.SystemUtils;
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class User{
+	static Scanner read = new Scanner(System.in);
+	static SystemUtils tools = new SystemUtils();
+	
+	static boolean isConfirm=false;
+	static int sn = 1;
+    static String firstName;
+    static String lastName;
+    static String fullName;
+    static String userName;
+    static  String pin;
+    static String [] info = new String [5];
+	
+	 public static void register(){
+        while (isConfirm==false){
+            System.out.print("First Name:");
+            firstName=read.nextLine();
+            isConfirm=tools.confirm(firstName); 
+        }
+        isConfirm=false;
+        while (isConfirm==false){
+            System.out.print("Last Name:");
+            lastName=read.nextLine();
+            isConfirm=tools.confirm(lastName);
+        }
+        isConfirm=false;
+        while(isConfirm==false){
+            System.out.print("User Name:");
+            userName=read.nextLine();
+            isConfirm=tools.confirm(userName);
+        }
+        isConfirm=false;
+        while (isConfirm==false){
+            System.out.print("Pin (4 digits):");
+            pin=read.nextLine();
+            isConfirm=tools.confirm(pin);
+        }
+        isConfirm=false;
+        info = new String[] {Integer.toString(sn),firstName,lastName,userName,tools.encrypt(pin)};
+        System.out.println(Arrays.toString(info));
+    }
+	public static void login(){}
+}

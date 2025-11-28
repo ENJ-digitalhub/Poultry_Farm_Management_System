@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.io.FileWriter;
 //for handling file writing error
 import java.io.IOException;
+//for arrray operations
+import java.util.Arrays;
 
 public class PoultryFarmManagementSystem{
 	//Object declared static so in can be accessable for all methods
@@ -13,12 +15,13 @@ public class PoultryFarmManagementSystem{
 	//This object is for the present time
 	static LocalDateTime now = LocalDateTime.now();
 	static boolean isConfirm=false;
-	static int sn;
+	static int sn=1;
 	static String firstName;
 	static String lastName;
 	static String fullName;
 	static String userName;
 	static int pin;
+	static String [] info = new String [5];
 	
 	private static int encrypt(int pin){
 		int valid=0;
@@ -95,7 +98,6 @@ public class PoultryFarmManagementSystem{
 		int decryptedPin = (d1*1000)+(d2*100)+(d3*10)+d4;
 		return decryptedPin;
 	}
-	
 	public static String center(String s,double x){
 		double padding = (x-s.length())/2;
 		return " ".repeat((int)padding)+s+" ".repeat((int)padding);
@@ -112,7 +114,7 @@ public class PoultryFarmManagementSystem{
 		clearScreen();
 		System.out.println("Closing program . . . . .");
 	}
-	public static boolean confirm(double x){
+	public static boolean confirm(Object x){
 		clearScreen();
 		System.out.print("Confirm \""+x+" \"(Y,N)?");
 		char confirm=read.next().charAt(0);
@@ -122,55 +124,13 @@ public class PoultryFarmManagementSystem{
 		if (confirm=='y'){
 			clearScreen();
 			System.out.println("Saving . . .\nSaved.");
-			clearScreen();
+			//clearScreen();
 			isConfirm=true	;	
 		}
 		else if(confirm=='n'){
 			clearScreen();
 			System.out.print(". . .");
-			clearScreen();
-			isConfirm=false;
-		}
-		return isConfirm;
-	}
-	public static boolean confirm(String x){
-		clearScreen();
-		System.out.print("Confirm \""+x+" \"(Y,N)?");
-		char confirm=read.next().charAt(0);
-		//change character to lowercase.
-		confirm=Character.toLowerCase(confirm);
-		//confirming input
-		if (confirm=='y'){
-			clearScreen();
-			System.out.println("Saving . . .\nSaved.");
-			clearScreen();
-			isConfirm=true	;	
-		}
-		else if(confirm=='n'){
-			clearScreen();
-			System.out.print(". . .");
-			clearScreen();
-			isConfirm=false;
-		}
-		return isConfirm;
-	}
-	public static boolean confirm(int x){
-		clearScreen();
-		System.out.print("Confirm \""+x+" \"(Y,N)?");
-		char confirm=read.next().charAt(0);
-		//change character to lowercase.
-		confirm=Character.toLowerCase(confirm);
-		//confirming input
-		if (confirm=='y'){
-			clearScreen();
-			System.out.println("Saving . . .\nSaved.");
-			clearScreen();
-			isConfirm=true	;	
-		}
-		else if(confirm=='n'){
-			clearScreen();
-			System.out.print(". . .");
-			clearScreen();
+			//clearScreen();
 			isConfirm=false;
 		}
 		return isConfirm;
@@ -200,8 +160,7 @@ public class PoultryFarmManagementSystem{
 	public static void home(){}
 	public static void recordEdit(){}
 	public static void eggGraph(){}
-	public static void register(){	}
-	public static void login(){
+	public static void register(){
 		while (isConfirm==false){
 			read.nextLine();   // IMPORTANT! Fixes blank input problem, CLEARS INPUT BUFFER
 			System.out.print("First Name:");
@@ -226,10 +185,14 @@ public class PoultryFarmManagementSystem{
 		while (isConfirm==false){
 			System.out.print("Pin (4 digits):");
 			pin=read.nextInt();
+			read.nextLine();
 			confirm(pin);
 		}
 		isConfirm=false;
+		info = new String[] {Integer.toString(sn),firstName,lastName,userName,Integer.toString(encrypt(pin))};
+		System.out.println(Arrays.toString(info));
 	}
+	public static void login(){}
 	public static void startupPage(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(center("Poultry Farm Management System",50)+"\n");
@@ -264,4 +227,4 @@ public class PoultryFarmManagementSystem{
 	public static void main(String[] args){
 		startupPage();
 	}
-}	
+}	 
