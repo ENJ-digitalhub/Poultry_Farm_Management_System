@@ -24,15 +24,23 @@ public class SystemUtils{
         confirm=Character.toLowerCase(confirm);
         if (confirm=='y'){
             clearScreen();
-            System.out.println("Saved.");
+            System.out.println("Saving . . .");
             isConfirm=true;    
         } else if(confirm=='n'){
             clearScreen();
-            System.out.print(". . .");
+            System.out.println(". . .");
             isConfirm=false;
         }
         return isConfirm;
     }
+	public static boolean doubleValidation(double x){
+		if(x<0){
+			System.out.println("Error !!!\nMust be a positive number");
+			isConfirm=false;
+			return isConfirm;
+		}
+		return isConfirm;
+	}
 	public static String encrypt(String pin){
 		int valid=0;
 		int d4=0;
