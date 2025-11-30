@@ -43,6 +43,9 @@ public class User{
         isConfirm=false;
         info = new String[] {Integer.toString(sn),firstName,lastName,userName,tools.encrypt(pin)};
         System.out.println(Arrays.toString(info));
+		
+		tools.reader("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt");
+		tools.writer("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt",(Arrays.toString(info)));
     }
 	public static void login(){}
 }

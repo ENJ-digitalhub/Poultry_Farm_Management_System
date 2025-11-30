@@ -1,9 +1,16 @@
 package PF; 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class SystemUtils{
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
+	static ArrayList<String> lines = new ArrayList<>();
 	
 	public static String center(String s,double x){
         double padding = (x-s.length())/2;
@@ -19,20 +26,26 @@ public class SystemUtils{
     }
 	public static boolean confirm(Object x){
         clearScreen();
-        System.out.print("Confirm \""+x+" \"(Y,N)?");
+        System.out.print("Confirm \""+x+"\" (Y,N)?");
         char confirm=read.next().charAt(0);
         confirm=Character.toLowerCase(confirm);
-        if (confirm=='y'){
-            clearScreen();
-            System.out.println("Saving . . .");
-            isConfirm=true;    
-        } else if(confirm=='n'){
-            clearScreen();
-            System.out.println(". . .");
-            isConfirm=false;
-        }
+		if (confirm=='y'){
+			clearScreen();
+			System.out.println("Saving . . .");
+			isConfirm=true;    
+		}
+		else if(confirm=='n'){
+			clearScreen();
+			System.out.println(". . .");
+			isConfirm=false;
+		}
+		else{
+			clearScreen();
+			System.out.println("Invalid Input");
+			confirm(x);
+		}
         return isConfirm;
-    }
+	}
 	public static boolean doubleValidation(double x){
 		if(x<0){
 			System.out.println("Error !!!\nMust be a positive number");
@@ -122,5 +135,39 @@ public class SystemUtils{
 		}
 		int decryptedPin = (d1*1000)+(d2*100)+(d3*10)+d4;
 		return String.format("%04d",decryptedPin);
+	}
+	public static ArrayList<String> reader(String fileName){
+		try{
+			BufferedReader reader = new BufferedReader(new FileReader(fileName));
+			String lineRead;
+			while ((lineRead=reader.readLine())!=null){
+				lines.add(lineRead);
+			}
+			System.out.println(lines);
+			System.out.println("Reading Successful");
+			reader.close();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		return lines;
+	}
+	public static void writer(String fileName,String txtWritten){
+		try{
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+			int count=0;
+			for (String line : lines){
+				writer.write(lines.get(count));
+				writer.newLine();
+				count++;
+			}
+			writer.write(txtWritten);
+			writer.newLine();
+			System.out.println("Writing Successful");
+			writer.close();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 }

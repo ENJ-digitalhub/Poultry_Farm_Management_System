@@ -1,8 +1,5 @@
 //custom packages
-import PF.SystemUtils;
-import PF.FarmRecord;
-import PF.User;
-import PF.Report;
+import PF.*;
 //for accepting input
 import java.util.Scanner;
 //for date and time
@@ -16,7 +13,7 @@ public class PoultryManagementSystem{
 	static User user = new User();
 	static Report report = new Report();
 	
-	public static void startupPage(){
+	public void startupPage(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("Poultry Farm Management System",50)+"\n");
 		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),50));
@@ -47,7 +44,7 @@ public class PoultryManagementSystem{
 				break;
 		}
 	}
-	public static void home(){
+	public void home(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
@@ -57,7 +54,7 @@ public class PoultryManagementSystem{
 			//Daily data
 			case 1:
 				tools.clearScreen();
-				record.todayData();
+				record.todayData(this::home);
 				break;
 			//Vacination
 			case 2:
@@ -88,7 +85,8 @@ public class PoultryManagementSystem{
 		}
 	}
 	public static void main(String[] args){
-		
-		home();
+		PoultryManagementSystem PSM = new PoultryManagementSystem();
+		//startupPage();
+		PSM.home();
 	}
 }
