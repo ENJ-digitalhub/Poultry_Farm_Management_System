@@ -46,7 +46,7 @@ public class PoultryManagementSystem{
 	}
 	public void home(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.println(tools.center("MENU",50));
+		System.out.println(tools.center("MAIN MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.print("1. Record Today's Data\n2. Record Vaccination\n3. Edit Previous Record\n4. Reports\n5. Logout\nOption: ");
 		int option=read.nextInt();
@@ -69,7 +69,7 @@ public class PoultryManagementSystem{
 			//Report
 			case 4:
 				tools.clearScreen();
-				report.reportMenu();
+				report.reportMenu(this::home);
 				break;
 			//logout
 			case 5:

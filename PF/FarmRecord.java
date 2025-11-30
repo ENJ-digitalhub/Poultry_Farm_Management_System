@@ -32,8 +32,10 @@ public class FarmRecord{
 				confirm=Character.toLowerCase(confirm);
 				if (confirm=='y'){
 					tools.clearScreen();
-					System.out.println("Saving . . .");
-					isConfirm=true;    
+					System.out.println("Loading . . .");
+					isConfirm=true;
+					editRecord();
+					return;
 				}
 				else if(confirm=='n'){
 					tools.clearScreen();
@@ -48,7 +50,6 @@ public class FarmRecord{
 				}
 			}
 		}
-
         while(isConfirm==false){
             System.out.print("Input number of Eggs: "); 
             eggNo = read.nextInt();
@@ -84,9 +85,9 @@ public class FarmRecord{
 		tools.writer("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt",(Arrays.toString(data)));
     }
 	public static void recordVaccination(){
-		System.out.println("Under Condtruction");
+		System.out.println("Under Construction");
 	}
 	public static void editRecord(){
-		System.out.println("Under Condtruction");
+		System.out.println("Under Construction");
 	}
 }
