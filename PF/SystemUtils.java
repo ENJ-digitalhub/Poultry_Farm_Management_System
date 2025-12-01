@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class SystemUtils{
+	public static String farmRecord = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt";
+	public static String userInfo = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt";
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
 	static ArrayList<String> lines = new ArrayList<>();
@@ -143,8 +145,8 @@ public class SystemUtils{
 			while ((lineRead=reader.readLine())!=null){
 				lines.add(lineRead);
 			}
-			System.out.println(lines);
-			System.out.println("Reading Successful");
+			//System.out.println(lines);
+			System.out.println("Reading . . .\nReading Successful\n");
 			reader.close();
 		}
 		catch(IOException e){
@@ -163,7 +165,7 @@ public class SystemUtils{
 			}
 			writer.write(txtWritten);
 			writer.newLine();
-			System.out.println("Writing Successful");
+			System.out.println("Writing . . .\nWriting Successful\n");
 			writer.close();
 		}
 		catch(IOException e){

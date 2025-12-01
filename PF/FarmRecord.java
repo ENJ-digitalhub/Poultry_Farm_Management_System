@@ -15,11 +15,11 @@ public class FarmRecord{
 	static ArrayList <String> records = new ArrayList<>();
 	
 	public static void todayData(Runnable homeCallBack){
-		records = tools.reader("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt");
+		records = tools.reader(tools.farmRecord);
 		String lastRecord = records.get(records.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		String [] data = new String [5];
         boolean isConfirm=false;
+		String [] data = new String [5];
         double eggNo=0, feedNo=0, deathNo=0;
 		String comment="";
 		
@@ -79,10 +79,10 @@ public class FarmRecord{
 		}
 		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
         System.out.println("\nToday's data saved successfully\n");
+		tools.writer(tools.farmRecord,(Arrays.toString(data)));
+		tools.reader(tools.farmRecord);
 		System.out.println(Arrays.toString(data));
-		
-		tools.reader("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt");
-		tools.writer("C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt",(Arrays.toString(data)));
+		homeCallBack.run();
     }
 	public static void recordVaccination(){
 		System.out.println("Under Construction");
