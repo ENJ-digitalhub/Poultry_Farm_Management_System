@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class SystemUtils{
 	public static String farmRecord = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt";
@@ -13,6 +14,7 @@ public class SystemUtils{
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
 	static ArrayList<String> lines = new ArrayList<>();
+	static LocalDateTime time = LocalDateTime.now();
 	
 	public static String center(String s,double x){
         double padding = (x-s.length())/2;
@@ -171,5 +173,14 @@ public class SystemUtils{
 		catch(IOException e){
 			e.printStackTrace();
 		}
+	}
+	//converts month number to words
+	public static String monthsOfTheYear(String dates){
+		 String [] date = new String[3];
+		 date = dates.split("-");
+		 int month = Integer.parseInt(date[1]);
+		 LocalDateTime monthObj = time.withMonth(month);
+		 String monthInWords = monthObj.getMonth().toString();
+		 return monthInWords;
 	}
 }

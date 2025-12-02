@@ -76,6 +76,9 @@ public class FarmRecord{
 			read.nextLine();
 			comment=read.nextLine();
 			isConfirm=tools.confirm(comment);
+			if (comment==""){
+				comment="null";
+			}
 		}
 		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
         System.out.println("\nToday's data saved successfully\n");

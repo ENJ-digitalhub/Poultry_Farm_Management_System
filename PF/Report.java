@@ -36,7 +36,7 @@ public class Report{
 				//Monthly 
 				case 3:
 					tools.clearScreen();
-					monthlyReport();
+					monthlyReport(homeCallBack);
 					break;
 				//Report Summary
 				case 4:
@@ -67,11 +67,11 @@ public class Report{
 		String lastRecord = records.get(records.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
 		if (lastInRecord[0].equals(time.toLocalDate().toString())){
-			System.out.println("Date: "+lastInRecord[0]);
-			System.out.println("Number of Egg: "+lastInRecord[1]);
-			System.out.println("Feed Used: "+lastInRecord[2]);
-			System.out.println("Death: "+lastInRecord[3]);
-			System.out.println("Comment: "+lastInRecord[4]);
+			System.out.println("--- Daily Report ("+lastInRecord[0]+") ---");
+			System.out.println("\nEggs\t: "+lastInRecord[1]);
+			System.out.println("Feed \t: "+lastInRecord[2]);
+			System.out.println("Death\t: "+lastInRecord[3]);
+			System.out.println("Comment\t: "+lastInRecord[4]);
 		}
 		else{
 			System.out.println("No record found.");
@@ -93,7 +93,8 @@ public class Report{
 		double totalEggs=0,totalFeeds=0,totalDeaths=0,avarageEggs;
 		int count;
 		
-		for(count=1;count<=7;count++){
+		for(count=1;count<=7;){
+			//stops the loop if a week record is not complete
 			if (records.size()<count){
 				break;
 			}
@@ -104,15 +105,16 @@ public class Report{
 				totalFeeds+=Double.parseDouble(lastInRecord[2]);
 				totalDeaths+=Double.parseDouble(lastInRecord[3]);
 			}
+			count++;
 		}
 			avarageEggs=totalEggs/(count-1);
 			
-			System.out.println(time.toLocalDate().toString()+" -> "+time.toLocalDate().minusDays(count-2).toString());
-			System.out.println("\nTotal Eggs: "+totalEggs);
-			System.out.println("Total Feeds: "+totalFeeds);
-			System.out.println("Total Deaths: "+totalDeaths);
-			System.out.println("Average Eggs/Days: "+avarageEggs);
-			System.out.println("\n99. Back");
+			System.out.println("--- Weekly Report (Last "+(count-1)+" Days) ---");
+			System.out.println("\nTotal Eggs\t: "+totalEggs);
+			System.out.println("Total Feeds\t: "+totalFeeds);
+			System.out.println("Total Deaths\t: "+totalDeaths);
+			System.out.println("Average Eggs/Days\t: "+String.format("%.2f",avarageEggs));
+			System.out.print("\n99. Back\nOption: ");
 			int option = read.nextInt();
 			if (option==99){
 				tools.clearScreen();
@@ -123,9 +125,59 @@ public class Report{
 				System.out.print("Invalid Input");
 				weeklyReport(homeCallBack);
 			}
-		System.out.println("Under Construction");
 	}
-	public static void monthlyReport(){
+	public static void monthlyReport(Runnable homeCallBack){
+		records = tools.reader(tools.farmRecord);
+		String lowestEggDate="",highestEggDate="";
+		double totalEggs=0,highestEgg=0,lowestEgg=0,totalFeeds=0,totalDeaths=0;
+		int count=1;
+		boolean done=true;
+		while(done ){
+				if (records.size()<count){
+				break;
+			}		
+			String lastRecord = records.get(records.size()-count).replace("[","").replace("]",""); 
+			String [] lastInRecord = lastRecord.split(",\\s");
+			if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){ 
+				if (Double.parseDouble(lastInRecord[1])>highestEgg){
+					highestEgg=Double.parseDouble(lastInRecord[1]);
+					highestEggDate=lastInRecord[0];
+				}
+				if (count==1){
+					lowestEgg=Double.parseDouble(lastInRecord[1]);
+					lowestEggDate=lastInRecord[0];
+				}
+				if(Double.parseDouble(lastInRecord[1])<lowestEgg){
+					lowestEgg=Double.parseDouble(lastInRecord[1]);
+					lowestEggDate=lastInRecord[0];
+				}
+				
+				totalEggs+=Double.parseDouble(lastInRecord[1]);
+				totalFeeds+=Double.parseDouble(lastInRecord[2]);
+				totalDeaths+=Double.parseDouble(lastInRecord[3]);
+			}
+			else{
+				done = false;
+			}
+			count++;
+		}
+			System.out.println("--- Monthly Report ("+time.getMonth()+" "+time.getYear()+") ---");
+			System.out.println("\nTotal Eggs\t: "+totalEggs);
+			System.out.println("Total Feeds\t: "+totalFeeds);
+			System.out.println("Total Deaths\t: "+totalDeaths);
+			System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg+" eggs)");
+			System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg+" eggs)");
+			System.out.println("\n99. Back");
+			int option = read.nextInt();
+			if (option==99){
+				tools.clearScreen();
+				reportMenu(homeCallBack);
+			}
+			else{
+				tools.clearScreen();
+				System.out.print("Invalid Input");
+				monthlyReport(homeCallBack);
+			}
 		System.out.println("Under Construction");
 	}
 	public static void reportSummary(){
