@@ -41,7 +41,7 @@ public class Report{
 				//Report Summary
 				case 4:
 					tools.clearScreen();
-					reportSummary();
+					reportSummary(homeCallBack);
 					break;
 				//Egg graph
 				case 5:
@@ -178,9 +178,81 @@ public class Report{
 				System.out.print("Invalid Input");
 				monthlyReport(homeCallBack);
 			}
-		System.out.println("Under Construction");
 	}
-	public static void reportSummary(){
+	public static void reportSummary(Runnable homeCallBack){
+		records = tools.reader(tools.farmRecord);
+		String today="";
+		double todayEggs=0,thisWeekEgg=0,thisMonthEgg=0;
+		int count=1;
+		boolean done=true;
+		while(done ){
+			if (records.size()<count){
+				break;
+			}		
+			String lastRecord = records.get(records.size()-count).replace("[","").replace("]",""); 
+			String [] lastInRecord = lastRecord.split(",\\s");
+			//today
+			if (lastInRecord[0].equals(time.toLocalDate().toString())){
+				todayEggs=Double.parseDouble(lastInRecord[1]);
+			}
+			// this week
+			thisWeekEgg = 0.0;
+			int i = 0;
+			int counter = 1;
+			while (i <7 && counter <= records.size()) {
+				String lastRecordWeek = records.get(records.size() - counter).replace("[", "").replace("]", "");
+				String[] lastInRecordWeek = lastRecordWeek.split(",\\s");
+				// record date
+				int recordYear = Integer.parseInt(lastInRecordWeek[0].substring(0, 4));
+				int recordMonth = Integer.parseInt(lastInRecordWeek[0].substring(5, 7));
+				int recordDay = Integer.parseInt(lastInRecordWeek[0].substring(8, 10));
+				// target date
+				String target = time.toLocalDate().minusDays(i).toString();
+				int targetYear = Integer.parseInt(target.substring(0, 4));
+				int targetMonth = Integer.parseInt(target.substring(5, 7));
+				int targetDay = Integer.parseInt(target.substring(8, 10));
+				// Compare dates
+				if (recordYear == targetYear &&
+					recordMonth == targetMonth &&
+					recordDay == targetDay) {
+					thisWeekEgg += Double.parseDouble(lastInRecordWeek[1]);
+					counter++;
+					i++;
+				}
+				else if (recordYear < targetYear || 
+						   (recordYear == targetYear && recordMonth < targetMonth) ||
+						   (recordYear == targetYear && recordMonth == targetMonth && recordDay < targetDay)) {
+					i++; 
+				}
+				else{
+					counter++;
+				}
+			}
+			//this month
+			if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){ 
+				thisMonthEgg+=Double.parseDouble(lastInRecord[1]);
+			}
+			else{
+				done = false;
+			}
+			count++;
+			}
+			System.out.println("--- Summary Report ---");
+			System.out.println("\nToday Egg\t: "+todayEggs);
+			System.out.println("This Week\t: "+thisWeekEgg);
+			System.out.println("This Month\t: "+thisMonthEgg);
+			System.out.println("\n99. Back");
+			int option = read.nextInt();
+			if (option==99){
+				tools.clearScreen();
+				reportMenu(homeCallBack);
+			}
+			else{
+				tools.clearScreen();
+				System.out.print("Invalid Input");
+				reportSummary(homeCallBack);
+			}
+		System.out.println("Under Construction");
 		System.out.println("Under Construction");
 	}
 	public static void eggGraph(){
