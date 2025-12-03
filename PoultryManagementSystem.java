@@ -49,6 +49,7 @@ public class PoultryManagementSystem{
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("MAIN MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
+		/*report.eggGraph();*/
 		System.out.print("1. Record Today's Data\n2. Record Vaccination\n3. Edit Previous Record\n4. Reports\n99. Logout\nOption: ");
 		int option=read.nextInt();
 		if (option==99){
