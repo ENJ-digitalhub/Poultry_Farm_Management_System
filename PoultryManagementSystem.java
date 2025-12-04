@@ -50,7 +50,7 @@ public class PoultryManagementSystem{
 		System.out.println(tools.center("MAIN MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		/*report.eggGraph();*/
-		System.out.print("1. Record Today's Data\n2. Record Vaccination\n3. Edit Previous Record\n4. Reports\n99. Logout\nOption: ");
+		System.out.print("1. Record Today's Data\n2. Record Vaccination\n3. Edit Previous Record\n4. Reports\n5. Stock Management\n99. Logout\nOption: ");
 		int option=read.nextInt();
 		if (option==99){
 			tools.clearScreen();
@@ -77,6 +77,11 @@ public class PoultryManagementSystem{
 				case 4:
 					tools.clearScreen();
 					report.reportMenu(this::home);
+					break;
+				//Stock
+				case 5:
+					tools.clearScreen();
+					Inventory.stockMenu(this::home);
 					break;
 				//For wrong input
 				default:

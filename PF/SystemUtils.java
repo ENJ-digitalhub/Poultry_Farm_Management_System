@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class SystemUtils{
 	public static String farmRecord = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt";
 	public static String userInfo = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt";
+	public static String inventory = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\Inventory.txt";
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
 	static ArrayList<String> lines = new ArrayList<>();
@@ -35,7 +36,7 @@ public class SystemUtils{
         confirm=Character.toLowerCase(confirm);
 		if (confirm=='y'){
 			clearScreen();
-			System.out.println("Saving . . .");
+			System.out.println("Confimed . . .");
 			isConfirm=true;    
 		}
 		else if(confirm=='n'){
@@ -141,6 +142,7 @@ public class SystemUtils{
 		return String.format("%04d",decryptedPin);
 	}
 	public static ArrayList<String> reader(String fileName){
+		lines.clear();
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
 			String lineRead;
@@ -152,7 +154,9 @@ public class SystemUtils{
 			reader.close();
 		}
 		catch(IOException e){
-			e.printStackTrace();
+			System.out.println("File does not exist\n Creating new file . . .");
+			writer(fileName,"");
+			//e.printStackTrace();
 		}
 		return lines;
 	}

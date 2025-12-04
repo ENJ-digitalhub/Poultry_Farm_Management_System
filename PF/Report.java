@@ -43,7 +43,7 @@ public class Report{
 					tools.clearScreen();
 					reportSummary(homeCallBack);
 					break;
-				//Egg graph
+				//stats Summary
 				case 5:
 					tools.clearScreen();
 					statsSummary();
@@ -267,6 +267,57 @@ public class Report{
 		System.out.println("\n"+"-".repeat(50)+"\n");
 	}
 	public static void statsSummary(){
-		System.out.println("Under Construction");
+		/*records = tools.reader(tools.farmRecord);
+		String lowestEggDate="",highestEggDate="";
+		double totalEggs=0,highestEgg=0,lowestEgg=0,totalFeeds=0,totalDeaths=0;
+		int count=1;
+		boolean done=true;
+		while(done ){
+				if (records.size()<count){
+				break;
+			}		
+			String lastRecord = records.get(records.size()-count).replace("[","").replace("]",""); 
+			String [] lastInRecord = lastRecord.split(",\\s");
+			if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){ 
+				if (Double.parseDouble(lastInRecord[1])>highestEgg){
+					highestEgg=Double.parseDouble(lastInRecord[1]);
+					highestEggDate=lastInRecord[0];
+				}
+				if (count==1){
+					lowestEgg=Double.parseDouble(lastInRecord[1]);
+					lowestEggDate=lastInRecord[0];
+				}
+				if(Double.parseDouble(lastInRecord[1])<lowestEgg){
+					lowestEgg=Double.parseDouble(lastInRecord[1]);
+					lowestEggDate=lastInRecord[0];
+				}
+				
+				totalEggs+=Double.parseDouble(lastInRecord[1]);
+				totalFeeds+=Double.parseDouble(lastInRecord[2]);
+				totalDeaths+=Double.parseDouble(lastInRecord[3]);
+			}
+			else{
+				done = false;
+			}
+			count++;
+		}
+			System.out.println("--- Monthly Report ("+time.getMonth()+" "+time.getYear()+") ---");
+			System.out.println("\nTotal Eggs\t: "+totalEggs);
+			System.out.println("Total Feeds\t: "+totalFeeds);
+			System.out.println("Total Deaths\t: "+totalDeaths);
+			System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg+" eggs)");
+			System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg+" eggs)");
+			System.out.println("\n99. Back");
+			int option = read.nextInt();
+			if (option==99){
+				tools.clearScreen();
+				reportMenu(homeCallBack);
+			}
+			else{
+				tools.clearScreen();
+				System.out.print("Invalid Input");
+				monthlyReport(homeCallBack);
+			}
+		System.out.println("Under Construction");*/
 	}
 } 
