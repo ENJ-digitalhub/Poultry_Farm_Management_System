@@ -16,9 +16,9 @@ public class Report{
         System.out.println("\n"+"=".repeat(50)+"\n");
         System.out.println(tools.center("REPORT MENU",50));
         System.out.println("\n"+"=".repeat(50)+"\n");
-        System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n99. Back\nOption: ");
+        System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n0. Back\nOption: ");
         int option=read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             homeCallBack.run();
         }
@@ -68,10 +68,10 @@ public class Report{
             System.out.println("No record found.");
         }
 
-        System.out.println("\n99. Back");
+        System.out.println("\n0. Back");
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
         }
@@ -108,9 +108,9 @@ public class Report{
         System.out.println("Total Feeds\t: "+totalFeeds);
         System.out.println("Total Deaths\t: "+totalDeaths);
         System.out.println("Average Eggs/Days\t: "+String.format("%.2f",avarageEggs));
-        System.out.print("\n99. Back\nOption: ");
+        System.out.print("\n0. Back\nOption: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
         }
@@ -165,11 +165,11 @@ public class Report{
         System.out.println("Total Deaths\t: "+totalDeaths);
         System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg+" eggs)");
         System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg+" eggs)");
-        System.out.println("\n99. Back");
+        System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
         }
@@ -226,11 +226,11 @@ public class Report{
         System.out.println("\nToday Egg\t: "+todayEggs);
         System.out.println("This Week\t: "+thisWeekEgg);
         System.out.println("This Month\t: "+thisMonthEgg);
-        System.out.println("\n99. Back");
+        System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
         }
@@ -297,11 +297,11 @@ public class Report{
         System.out.println("--- Statistics Summary ---");
         System.out.println("\nHighest Eggs: \t: "+highestEgg+" eggs on "+highestEggDate);
         System.out.println("Lowest Eggs: \t: "+lowestEgg+" eggs on "+lowestEggDate);
-        System.out.println("\n99. Back");
+        System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
         }

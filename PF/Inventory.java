@@ -16,9 +16,9 @@ public class Inventory{
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("STOCK MANAGEMENT MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. Record Vaccine/Medicine Stock\n5. View Current Stock\n6. Edit Stock Record\n99. Back\nOptions:");
+		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. Record Vaccine/Medicine Stock\n5. View Current Stock\n6. Edit Stock Record\n0. Back\nOptions:");
 		int option=read.nextInt();
-		if (option==99){
+		if (option==0){
 			tools.clearScreen();
 			homeCallBack.run();
 		}
@@ -64,11 +64,10 @@ public class Inventory{
 		}
 	}
 	public static void addBird(Runnable homeCallBack){
-		int birdNo=0;
+		double birdNo=0;
 		isConfirm=false;
 		while(isConfirm==false){
-			System.out.print("Input number of Bird(s): ");
-			birdNo = read.nextInt();
+			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
 		 if(inventoryRecord.size() == 0){
@@ -79,18 +78,17 @@ public class Inventory{
 		inventoryRecord = tools.reader(tools.INVENTORY);
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		int previousBirdNo=Integer.parseInt(lastInRecord[1]);
+		double previousBirdNo=Double.parseDouble(lastInRecord[1]);
 		birdNo+=previousBirdNo;
 		lastInRecord[1]=String.valueOf(birdNo);
 		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}
 	public static void removeBird(Runnable homeCallBack){
-		int birdNo=0;
+		double birdNo=0;
 		isConfirm=false;
 		while(isConfirm==false){
-			System.out.print("Input number of Bird(s): ");
-			birdNo = read.nextInt();
+			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
 		 if(inventoryRecord.size() == 0){
@@ -101,7 +99,7 @@ public class Inventory{
 		inventoryRecord = tools.reader(tools.INVENTORY);
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		int currentBirdNo=Integer.parseInt(lastInRecord[1]);
+		double currentBirdNo=Double.parseDouble(lastInRecord[1]);
 		if(birdNo>currentBirdNo){
 			System.out.println("Insufficient. Total Birds: "+currentBirdNo);
 			stockMenu(homeCallBack);
@@ -112,11 +110,10 @@ public class Inventory{
 		stockMenu(homeCallBack);
 	}
 	public static void addFeed(Runnable homeCallBack){
-		int feedNo=0;
+		double feedNo=0;
 		isConfirm=false;
 		while(isConfirm==false){
-			System.out.print("Input number of Feed(s): ");
-			feedNo = read.nextInt();
+			feedNo = tools.getPositiveDoubleInput("Input number of Feed(s): ");
 			isConfirm=tools.confirm(feedNo);
 		}
 		 if(inventoryRecord.size() == 0){
@@ -127,18 +124,17 @@ public class Inventory{
 		inventoryRecord = tools.reader(tools.INVENTORY);
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		int previousFeedNo=Integer.parseInt(lastInRecord[2]);
+		double previousFeedNo=Double.parseDouble(lastInRecord[2]);
 		feedNo+=previousFeedNo;
 		lastInRecord[2]=String.valueOf(feedNo);
 		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}	
 	public static void addVaccine(Runnable homeCallBack){
-		int vaccineNo=0;
+		double vaccineNo=0;
 		isConfirm=false;
 		while(isConfirm==false){
-			System.out.print("Input number of Feed(s): ");
-			vaccineNo = read.nextInt();
+			vaccineNo = tools.getPositiveDoubleInput("Input number of Vaccine(s): ");
 			isConfirm=tools.confirm(vaccineNo);
 		}
 		 if(inventoryRecord.size() == 0){
@@ -167,7 +163,7 @@ public class Inventory{
 		inventoryRecord = tools.reader(tools.INVENTORY);
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		int previousFeedNo=Integer.parseInt(lastInRecord[3]);
+		double previousFeedNo=Double.parseDouble(lastInRecord[3]);
 		vaccineNo+=previousFeedNo;
 		lastInRecord[3]=String.valueOf(vaccineNo);
 		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
@@ -198,14 +194,14 @@ public class Inventory{
         System.out.println("Feed(s) \t: "+feedNo);
 		System.out.println("Vaccine(s) \t: "+vaccineNo);
         System.out.println("\n1. Veiw Stock History");
-		System.out.println("99. Back");
+		System.out.println("0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
         if (option==1){
             //reportMenu(homeCallBack);
         }       
-		else if (option==99){
+		else if (option==0){
             tools.clearScreen();
             stockMenu(homeCallBack);
         }
@@ -217,11 +213,11 @@ public class Inventory{
     }
 	public static void editStock(Runnable homeCallBack){
 		System.out.println("Under Construction");
-		System.out.println("\n99. Back");
+		System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             stockMenu(homeCallBack);
         }

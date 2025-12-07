@@ -51,14 +51,6 @@ public class SystemUtils{
 		}
         return isConfirm;
 	}
-	public static boolean doubleValidation(double x){
-		if(x<0){
-			System.out.println("Error !!!\nMust be a positive number");
-			isConfirm=false;
-			return isConfirm;
-		}
-		return isConfirm;
-	}
 	public static String encrypt(String pin){
 		int valid=0;
 		int d4=0;
@@ -154,7 +146,7 @@ public class SystemUtils{
 			reader.close();
 		}
 		catch(IOException e){
-			System.out.println("File does not exist\n Creating new file . . .");
+			System.out.println("File does not exist\nCreating new file . . .");
 			writer(fileName,"");
 			//e.printStackTrace();
 		}
@@ -162,7 +154,8 @@ public class SystemUtils{
 	}
 	public static void writer(String fileName,String txtWritten){
 		try{
-			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+			lines.clear();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName,true));
 			int count=0;
 			for (String line : lines){
 				writer.write(lines.get(count));
@@ -187,4 +180,13 @@ public class SystemUtils{
 		 String monthInWords = monthObj.getMonth().toString();
 		 return monthInWords;
 	}
+	public static double getPositiveDoubleInput(String prompt){
+    double value;
+    do{
+        System.out.print(prompt);
+        value = read.nextDouble();
+    } while(value <= 0);
+    return value;
+}
+
 }

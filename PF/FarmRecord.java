@@ -12,63 +12,94 @@ public class FarmRecord{
 	static SystemUtils tools = new SystemUtils();
 	static Scanner read = new Scanner(System.in);
 	static LocalDateTime time = LocalDateTime.now();
-	static ArrayList <String> records = new ArrayList<>();
+	static ArrayList <String> farmRecords = new ArrayList<>();
 	
+	public static void farmMenu(Runnable homeCallBack){
+		System.out.println("\n"+"=".repeat(50)+"\n");
+        System.out.println(tools.center("FARM MANAGENMENT MENU",50));
+        System.out.println("\n"+"=".repeat(50)+"\n");
+        System.out.print("1. Record Today's Farm Data\n2. View Farm Record History\n3. Update Existing Farm Record\n0. Back\nOption: ");
+        int option=read.nextInt();
+        if (option==0){
+            tools.clearScreen();
+            homeCallBack.run();
+        }
+        else{
+            switch (option){
+                case 1:
+                    tools.clearScreen();
+                    todayData(homeCallBack);
+                    break;
+                case 2:
+                    tools.clearScreen();
+                    viewRecord(homeCallBack);
+                    break;
+                case 3:
+                    tools.clearScreen();
+                    editRecord(homeCallBack);
+                    break;
+                default:
+                    tools.clearScreen();
+                    System.out.println("Invalid selection");
+                    farmMenu(homeCallBack);
+                    break;
+            }
+        }
+    }
 	public static void todayData(Runnable homeCallBack){
-		records = tools.reader(tools.FARMRECORD);
-		String lastRecord = records.get(records.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
         boolean isConfirm=false;
 		String [] data = new String [5];
         double eggNo=0, feedNo=0, deathNo=0;
 		String comment="";
+		farmRecords = tools.reader(tools.FARMRECORD);
+		if(farmRecords.size() == 0){
+        System.out.println("No previous record found. Creating first farm record...\n");
+		}
+		else{
+		String lastRecord = farmRecords.get(farmRecords.size()-1).replace("[","").replace("]","");
+		String[] lastInRecord = lastRecord.split(",\\s");
 		
-		if (lastInRecord[0].equals(time.toLocalDate().toString())){
-			System.out.println("Record Already Exists");
-			isConfirm=false;
-			while(isConfirm==false){
-				System.out.println("\nDo you want to edit past record(Y/N)?");
-				char confirm=read.next().charAt(0);
-				confirm=Character.toLowerCase(confirm);
-				if (confirm=='y'){
-					tools.clearScreen();
-					System.out.println("Loading . . .");
-					isConfirm=true;
-					editRecord(homeCallBack);
-					return;
-				}
-				else if(confirm=='n'){
-					tools.clearScreen();
-					System.out.println("Back to Main Menu");
-					isConfirm=true;
-					homeCallBack.run();
-					return;
-				}
-				else{
-					tools.clearScreen();
-					System.out.println("Invalid Input");
+			if (lastInRecord[0].equals(time.toLocalDate().toString())){
+				System.out.println("Record Already Exists");
+				isConfirm=false;
+				while(isConfirm==false){
+					System.out.println("\nDo you want to edit past record(Y/N)?");
+					char confirm=read.next().charAt(0);
+					confirm=Character.toLowerCase(confirm);
+					if (confirm=='y'){
+						tools.clearScreen();
+						System.out.println("Loading . . .");
+						isConfirm=true;
+						editRecord(homeCallBack);
+						return;
+					}
+					else if(confirm=='n'){
+						tools.clearScreen();
+						System.out.println("Back to Farm Management Menu");
+						isConfirm=true;
+						farmMenu(homeCallBack);
+						return;
+					}
+					else{
+						tools.clearScreen();
+						System.out.println("Invalid Input");
+					}
 				}
 			}
 		}
         while(isConfirm==false){
-            System.out.print("Input number of Eggs: "); 
-            eggNo = read.nextInt();
+            eggNo = tools.getPositiveDoubleInput("Input number of Egg(s): "); 
             isConfirm=tools.confirm(eggNo);
-			isConfirm=tools.doubleValidation(eggNo);
         }
         isConfirm=false;
         while(isConfirm==false){
-            System.out.print("Input number of Feeds used: ");
-            feedNo = read.nextInt();
+            feedNo = tools.getPositiveDoubleInput("Input number of Feed(s) used: ");
             isConfirm=tools.confirm(feedNo);
-			isConfirm=tools.doubleValidation(feedNo);
         }
         isConfirm=false;
         while(isConfirm==false){
-            System.out.print("Input number of Deaths: ");
-            deathNo = read.nextInt();
+            deathNo = tools.getPositiveDoubleInput("Input number of Death(s): ");
             isConfirm=tools.confirm(deathNo);
-			isConfirm=tools.doubleValidation(deathNo);
         }
 		isConfirm=false;
 		while(isConfirm==false){
@@ -80,38 +111,63 @@ public class FarmRecord{
 				comment="null";
 			}
 		}
+		//tools.reader(tools.FARMRECORD);
 		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
-        System.out.println("\nToday's data saved successfully\n");
-		tools.writer(tools.FARMRECORD,(Arrays.toString(data)));
-		tools.reader(tools.FARMRECORD);
 		System.out.println(Arrays.toString(data));
-		homeCallBack.run();
+		tools.writer(tools.FARMRECORD,(Arrays.toString(data)));
+        System.out.println("\nToday's data saved successfully\n");
+		farmMenu(homeCallBack);
     }
-	public static void recordVaccination(Runnable homeCallBack){
-		System.out.println("Under Construction");
-		System.out.println("\n99. Back");
-
+	public static void viewRecord(Runnable homeCallBack){
+		farmRecords = tools.reader(tools.FARMRECORD);
+		if(farmRecords.size() == 0){
+        System.out.println("No previous record found\n");
+		}
+		else{
+			System.out.println("--- Farm Record History ---");
+			System.out.println("\nDate\t\t|Eggs\t|Feed\t|Death\t|Comment");
+			String date="",comment="";
+			double eggNo=0,feedNo=0,deathNo=0;
+			int count=1;
+			boolean done=true;
+			while(count<farmRecords.size()){
+				if(count<farmRecords.size())break;
+				String lastRecord = farmRecords.get(farmRecords.size()-count).replace("[","").replace("]","");
+				String[] lastInRecord = lastRecord.split(",\\s");
+				date=lastInRecord[0];
+				eggNo=Double.parseDouble(lastInRecord[1]);
+				feedNo=Double.parseDouble(lastInRecord[2]);
+				deathNo=Double.parseDouble(lastInRecord[3]);
+				comment=lastInRecord[4];
+				System.out.println("\n"+date+"\t|"+eggNo+"\t|"+feedNo+"\t|"+deathNo+"\t|"+comment);
+				count++;
+			}        
+		}
+		System.out.println("0. Back");
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==1){
+            //reportMenu(homeCallBack);
+        }       
+		else if (option==0){
             tools.clearScreen();
-            homeCallBack.run();
+            farmMenu(homeCallBack);
         }
         else{
             tools.clearScreen();
             System.out.print("Invalid Input");
-            recordVaccination(homeCallBack);
+            viewRecord(homeCallBack);
         }
 	}
 	public static void editRecord(Runnable homeCallBack){
 		System.out.println("Under Construction");
-		System.out.println("\n99. Back");
+		System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
-            homeCallBack.run();
+			farmMenu(homeCallBack);
         }
         else{
             tools.clearScreen();

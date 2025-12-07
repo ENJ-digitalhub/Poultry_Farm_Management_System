@@ -49,10 +49,10 @@ public class User{
     }
 	public static void login(Runnable startupPageCallBack){
 		System.out.println("Under Construction");
-		System.out.println("\n99. Back");
+		System.out.println("\n0. Back");
 
         int option = read.nextInt();
-        if (option==99){
+        if (option==0){
             tools.clearScreen();
             startupPageCallBack.run();
         }
