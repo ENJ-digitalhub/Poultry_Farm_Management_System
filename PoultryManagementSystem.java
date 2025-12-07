@@ -29,7 +29,7 @@ public class PoultryManagementSystem{
 				//Login
 				case 1:
 					tools.clearScreen();
-					user.login();
+					user.login(this::startupPage);
 					break;
 				//Register
 				case 2:
@@ -66,12 +66,12 @@ public class PoultryManagementSystem{
 				//Vacination
 				case 2:
 					tools.clearScreen();
-					record.recordVaccination();
+					record.recordVaccination(this::home);
 					break;
 				//Record edit
 				case 3:
 					tools.clearScreen();
-					record.editRecord();
+					record.editRecord(this::home);
 					break;
 				//Report
 				case 4:

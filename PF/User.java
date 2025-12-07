@@ -44,8 +44,22 @@ public class User{
         info = new String[] {Integer.toString(sn),firstName,lastName,userName,tools.encrypt(pin)};
         System.out.println(Arrays.toString(info));
 		
-		tools.reader(tools.userInfo);
-		tools.writer(tools.userInfo,(Arrays.toString(info)));
+		tools.reader(tools.USERINFO);
+		tools.writer(tools.USERINFO,(Arrays.toString(info)));
     }
-	public static void login(){}
+	public static void login(Runnable startupPageCallBack){
+		System.out.println("Under Construction");
+		System.out.println("\n99. Back");
+
+        int option = read.nextInt();
+        if (option==99){
+            tools.clearScreen();
+            startupPageCallBack.run();
+        }
+        else{
+            tools.clearScreen();
+            System.out.print("Invalid Input");
+            login(startupPageCallBack);
+        }
+	}
 }

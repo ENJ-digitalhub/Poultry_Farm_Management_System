@@ -15,7 +15,7 @@ public class FarmRecord{
 	static ArrayList <String> records = new ArrayList<>();
 	
 	public static void todayData(Runnable homeCallBack){
-		records = tools.reader(tools.farmRecord);
+		records = tools.reader(tools.FARMRECORD);
 		String lastRecord = records.get(records.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
         boolean isConfirm=false;
@@ -34,7 +34,7 @@ public class FarmRecord{
 					tools.clearScreen();
 					System.out.println("Loading . . .");
 					isConfirm=true;
-					editRecord();
+					editRecord(homeCallBack);
 					return;
 				}
 				else if(confirm=='n'){
@@ -82,15 +82,41 @@ public class FarmRecord{
 		}
 		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
         System.out.println("\nToday's data saved successfully\n");
-		tools.writer(tools.farmRecord,(Arrays.toString(data)));
-		tools.reader(tools.farmRecord);
+		tools.writer(tools.FARMRECORD,(Arrays.toString(data)));
+		tools.reader(tools.FARMRECORD);
 		System.out.println(Arrays.toString(data));
 		homeCallBack.run();
     }
-	public static void recordVaccination(){
+	public static void recordVaccination(Runnable homeCallBack){
 		System.out.println("Under Construction");
+		System.out.println("\n99. Back");
+
+		System.out.print("Option: ");
+        int option = read.nextInt();
+        if (option==99){
+            tools.clearScreen();
+            homeCallBack.run();
+        }
+        else{
+            tools.clearScreen();
+            System.out.print("Invalid Input");
+            recordVaccination(homeCallBack);
+        }
 	}
-	public static void editRecord(){
+	public static void editRecord(Runnable homeCallBack){
 		System.out.println("Under Construction");
+		System.out.println("\n99. Back");
+
+		System.out.print("Option: ");
+        int option = read.nextInt();
+        if (option==99){
+            tools.clearScreen();
+            homeCallBack.run();
+        }
+        else{
+            tools.clearScreen();
+            System.out.print("Invalid Input");
+            editRecord(homeCallBack);
+        }
 	}
 }

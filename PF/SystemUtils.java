@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class SystemUtils{
-	public static String farmRecord = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt";
-	public static String userInfo = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt";
-	public static String inventory = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\Inventory.txt";
+	public static final String FARMRECORD = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\FarmRecords.txt";
+	public static final String USERINFO = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\UsersInfo.txt";
+	public static final String INVENTORY = "C:\\Users\\Noble Ekwere\\OneDrive\\Dokumente\\NIIT\\Poultry_Farm_Management_System\\data\\Inventory.txt";
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
 	static ArrayList<String> lines = new ArrayList<>();
