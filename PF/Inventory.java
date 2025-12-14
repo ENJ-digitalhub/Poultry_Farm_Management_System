@@ -16,7 +16,7 @@ public class Inventory{
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("STOCK MANAGEMENT MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. Record Vaccine/Medicine Stock\n5. View Current Stock\n6. Edit Stock Record\n0. Back\nOptions:");
+		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. View Current Stock\n0. Back\nOptions:");
 		int option=read.nextInt();
 		if (option==0){
 			tools.clearScreen();
@@ -39,20 +39,10 @@ public class Inventory{
 					tools.clearScreen();
 					addFeed(homeCallBack);
 					break;
-				//add Vaccine
+				//view Stock data
 				case 4:
 					tools.clearScreen();
-					addVaccine(homeCallBack);
-					break;
-				//view Stock data
-				case 5:
-					tools.clearScreen();
 					viewStock(homeCallBack);
-					break;
-				//Edit Stock Record
-				case 6:
-					tools.clearScreen();
-					editStock(homeCallBack);
 					break;
 				//For wrong input
 				default:
@@ -66,13 +56,14 @@ public class Inventory{
 	public static void addBird(Runnable homeCallBack){
 		double birdNo=0;
 		isConfirm=false;
+		inventoryRecord = tools.reader(tools.INVENTORY);
 		while(isConfirm==false){
 			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
-		 if(inventoryRecord.size() == 0){
+		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
-        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" +", 0"+ "]";
+        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
         tools.writer(tools.INVENTORY, firstRecord);
 		}
 		inventoryRecord = tools.reader(tools.INVENTORY);
@@ -87,13 +78,14 @@ public class Inventory{
 	public static void removeBird(Runnable homeCallBack){
 		double birdNo=0;
 		isConfirm=false;
+		inventoryRecord = tools.reader(tools.INVENTORY);
 		while(isConfirm==false){
 			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
-		 if(inventoryRecord.size() == 0){
+		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
-        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + ", 0"+"]";
+        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
         tools.writer(tools.INVENTORY, firstRecord);
 		}
 		inventoryRecord = tools.reader(tools.INVENTORY);
@@ -112,13 +104,14 @@ public class Inventory{
 	public static void addFeed(Runnable homeCallBack){
 		double feedNo=0;
 		isConfirm=false;
+		inventoryRecord = tools.reader(tools.INVENTORY);
 		while(isConfirm==false){
 			feedNo = tools.getPositiveDoubleInput("Input number of Feed(s): ");
 			isConfirm=tools.confirm(feedNo);
 		}
-		 if(inventoryRecord.size() == 0){
+		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
-        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + ", 0"+"]";
+        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
         tools.writer(tools.INVENTORY, firstRecord);
 		}
 		inventoryRecord = tools.reader(tools.INVENTORY);
@@ -130,76 +123,37 @@ public class Inventory{
 		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}	
-	public static void addVaccine(Runnable homeCallBack){
-		double vaccineNo=0;
-		isConfirm=false;
-		while(isConfirm==false){
-			vaccineNo = tools.getPositiveDoubleInput("Input number of Vaccine(s): ");
-			isConfirm=tools.confirm(vaccineNo);
-		}
-		 if(inventoryRecord.size() == 0){
-        System.out.println("No previous record found. Creating first stock record...\n");
-		vaccineNo=0;
-		isConfirm=false;
-		while(isConfirm==false){
-			System.out.print("Input number of Vaccine(s): ");
-			vaccineNo = read.nextInt();
-			isConfirm=tools.confirm(vaccineNo);
-		}
-		 if(inventoryRecord.size() == 0){
-        System.out.println("No previous record found. Creating first stock record...\n");
-        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + ", 0"+"]";
-        tools.writer(tools.INVENTORY, firstRecord);
-		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
-		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
-		int previousFeedNo=Integer.parseInt(lastInRecord[3]);
-		vaccineNo+=previousFeedNo;
-		lastInRecord[3]=String.valueOf(vaccineNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
-		stockMenu(homeCallBack);
-		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
-		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
-		double previousFeedNo=Double.parseDouble(lastInRecord[3]);
-		vaccineNo+=previousFeedNo;
-		lastInRecord[3]=String.valueOf(vaccineNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
-		stockMenu(homeCallBack);
-	}
 	public static void viewStock(Runnable homeCallBack){
-		 if(inventoryRecord.size() == 0){
+		inventoryRecord = tools.reader(tools.INVENTORY);
+		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
-        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + ", 0"+"]";
+        String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
         tools.writer(tools.INVENTORY, firstRecord);
 		}
 		inventoryRecord = tools.reader(tools.INVENTORY);
-        double eggNo=0,feedNo=0,vaccineNo=0;
+        double eggNo=0,feedNo=0;
         int count=1;
         boolean done=true;
-        while(done ){
+        while(done){
             if (inventoryRecord.size()<count)break;
             String lastRecord = inventoryRecord.get(inventoryRecord.size()-count).replace("[","").replace("]","");
             String[] lastInRecord = lastRecord.split(",\\s");
 			eggNo=Double.parseDouble(lastInRecord[1]);
 			feedNo=Double.parseDouble(lastInRecord[2]);
-			vaccineNo=Double.parseDouble(lastInRecord[3]);
 			done=false;
         }
 		
         System.out.println("--- Current Stock ---");
-        System.out.println("\nEgg(s) \t: "+eggNo);
+        System.out.println("\nEgg(s) \t\t: "+eggNo);
         System.out.println("Feed(s) \t: "+feedNo);
-		System.out.println("Vaccine(s) \t: "+vaccineNo);
         System.out.println("\n1. Veiw Stock History");
 		System.out.println("0. Back");
 
 		System.out.print("Option: ");
         int option = read.nextInt();
         if (option==1){
-            //reportMenu(homeCallBack);
+			tools.clearScreen();
+            viewStockHistory(homeCallBack);
         }       
 		else if (option==0){
             tools.clearScreen();
@@ -211,20 +165,36 @@ public class Inventory{
             viewStock(homeCallBack);
         }
     }
-	public static void editStock(Runnable homeCallBack){
-		System.out.println("Under Construction");
+	public static void viewStockHistory(Runnable homeCallBack){
+		inventoryRecord = tools.reader(tools.INVENTORY);
+		if(inventoryRecord.size() == 0 || (inventoryRecord.size() == 1 && inventoryRecord.get(0).isEmpty())){
+			System.out.println("No farm records found\n");
+		}
+		else{
+			System.out.println("--- Farm Record History ---");
+			System.out.println("\nDate\t\t|Eggs\t\t|Feeds");
+			System.out.println("-".repeat(50));
+			for(int i = inventoryRecord.size() - 1; i >= 0; i--){
+				String record = inventoryRecord.get(i).replace("[","").replace("]","");
+				if(record.trim().isEmpty()) continue;
+				String[] recordData = record.split(",\\s*");
+				String date = recordData[0];
+				double eggNo = Double.parseDouble(recordData[1]);
+				double feedNo = Double.parseDouble(recordData[2]);
+				System.out.println(date + "\t|" + eggNo + "\t\t|" + feedNo);
+			}
+		}
 		System.out.println("\n0. Back");
-
 		System.out.print("Option: ");
-        int option = read.nextInt();
-        if (option==0){
-            tools.clearScreen();
-            stockMenu(homeCallBack);
-        }
-        else{
-            tools.clearScreen();
-            System.out.print("Invalid Input");
-            editStock(homeCallBack);
-        }
+		int option = read.nextInt();
+		if (option==0){
+			tools.clearScreen();
+			stockMenu(homeCallBack);
+		}
+		else{
+			tools.clearScreen();
+			System.out.print("Invalid Input");
+			viewStockHistory(homeCallBack);
+		}
 	}
 }

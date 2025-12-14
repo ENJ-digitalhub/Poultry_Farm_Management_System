@@ -185,7 +185,7 @@ public class SystemUtils{
     do{
         System.out.print(prompt);
         value = read.nextDouble();
-    } while(value <= 0);
+    } while(value < 0);
     return value;
 }
 	public static void rewriteFile(ArrayList<String> records){

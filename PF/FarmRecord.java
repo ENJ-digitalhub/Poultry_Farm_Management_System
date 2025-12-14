@@ -166,9 +166,9 @@ public class FarmRecord{
 		else{
 			System.out.println("--- Farm Record Editor ---");
 			isConfirm=false;
+			read.nextLine(); 
 			while(isConfirm==false){
 				System.out.print("Input Date(\"YYYY-MM-DD\"): ");
-				read.nextLine(); 
 				date = read.nextLine();
 				isConfirm=tools.confirm(date);
 			}

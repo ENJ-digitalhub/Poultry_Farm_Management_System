@@ -12,6 +12,7 @@ public class PoultryManagementSystem{
 	static FarmRecord record = new FarmRecord();
 	static User user = new User();
 	static Report report = new Report();
+	static Help help = new Help();
 	
 	public void startupPage(){
 		System.out.println("\n"+"=".repeat(50)+"\n");
@@ -50,7 +51,14 @@ public class PoultryManagementSystem{
 		System.out.println(tools.center("MAIN MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		/*report.eggGraph();*/
-		System.out.print("1. Farm Management\n2. Stock Management\n3. Report\n0. Logout\nOption: ");
+		System.out.print(
+			"1. Farm Management\n"+
+			"2. Stock Management\n"+
+			"3. Report\n"+
+			"4. Help\n"+
+			"0. Logout\n"+
+			"Option: "
+		);
 		int option=read.nextInt();
 		if (option==0){
 			tools.clearScreen();
@@ -72,6 +80,11 @@ public class PoultryManagementSystem{
 				case 3:
 					tools.clearScreen();
 					report.reportMenu(this::home);
+					break;
+				//Help
+				case 4:
+					tools.clearScreen();
+					help.helpMenu(this::home);
 					break;
 				//For wrong input
 				default:

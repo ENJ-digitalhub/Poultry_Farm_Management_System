@@ -262,7 +262,7 @@ public class Report{
         inventoryRecord = tools.reader(tools.INVENTORY);
         farmRecords = tools.reader(tools.FARMRECORD);
 
-        String lowestEggDate="",highestEggDate="";
+        String lowestEggDate="XXXX-XX-XX",highestEggDate="XXXX-XX-XX";
         double highestEgg=0,lowestEgg=0;
         int count=1;
         boolean done=true;
