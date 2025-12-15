@@ -51,7 +51,18 @@ public class User{
 		System.out.println("Under Construction");
 		System.out.println("\n0. Back");
 
-        int option = read.nextInt();
+        int option = -1;
+		while(true){
+			try{
+				option = read.nextInt();
+				read.nextLine();
+				break;
+			}catch(java.util.InputMismatchException e){
+				System.out.println("\nInvalid input! Please enter numbers only.");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
         if (option==0){
             tools.clearScreen();
             startupPageCallBack.run();

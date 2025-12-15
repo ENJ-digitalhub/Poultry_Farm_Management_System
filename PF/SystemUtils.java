@@ -181,13 +181,19 @@ public class SystemUtils{
 		 return monthInWords;
 	}
 	public static double getPositiveDoubleInput(String prompt){
-    double value;
-    do{
-        System.out.print(prompt);
-        value = read.nextDouble();
-    } while(value < 0);
-    return value;
-}
+		double value = -1;
+		do {
+			System.out.print(prompt);
+			try {
+				value = read.nextDouble();
+			} catch (java.util.InputMismatchException e) {
+				System.out.println("Invalid input. Please enter a number.");
+				read.nextLine();
+				value = -1;
+			}
+		} while(value < 0);
+		return value;
+	}
 	public static void rewriteFile(ArrayList<String> records){
     try {
         BufferedWriter clearWriter = new BufferedWriter(new FileWriter(FARMRECORD, false));

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 public class Report{
     static LocalDateTime time = LocalDateTime.now();
@@ -17,7 +18,18 @@ public class Report{
         System.out.println(tools.center("REPORT MENU",50));
         System.out.println("\n"+"=".repeat(50)+"\n");
         System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n0. Back\nOption: ");
-        int option=read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             homeCallBack.run();
@@ -70,7 +82,18 @@ public class Report{
 
         System.out.println("\n0. Back");
 		System.out.print("Option: ");
-        int option = read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
@@ -109,7 +132,18 @@ public class Report{
         System.out.println("Total Deaths\t: "+totalDeaths);
         System.out.println("Average Eggs/Days\t: "+String.format("%.2f",avarageEggs));
         System.out.print("\n0. Back\nOption: ");
-        int option = read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
@@ -168,7 +202,18 @@ public class Report{
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
-        int option = read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
@@ -229,7 +274,18 @@ public class Report{
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
-        int option = read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);
@@ -300,7 +356,18 @@ public class Report{
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
-        int option = read.nextInt();
+        int option=-1;
+        while(true){
+            try{
+                option=read.nextInt();
+                read.nextLine();
+                break;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input. Enter a number.");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
         if (option==0){
             tools.clearScreen();
             reportMenu(homeCallBack);

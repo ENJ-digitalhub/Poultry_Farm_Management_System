@@ -19,28 +19,39 @@ public class Help{
 			"0. Back\n"+
 			"Option: "
 		);
-		option = read.nextInt();
+
+		while(true){
+			try{
+				option = read.nextInt();
+				read.nextLine();
+				break;
+			}catch(Exception e){
+				System.out.println("Invalid input. Please enter a number corresponding to the menu option.");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
+
 		if (option==0){
 			tools.clearScreen();
 			homeCallBack.run();
 		}
 		else{
-			read.nextLine();
 			switch(option){
 				case 1:
 					tools.clearScreen();
 					System.out.println(
-						"--- Common Issues ---\n\n" +
-						"- No records found\n" +
-						"  - This means no stock has been added yet.\n\n" +
-						"- Invalid input\n" +
-						"  - Please enter numbers only where required.\n\n" +
-						"- Inventory is empty\n" +
-						"  - Add birds, feed, or vaccines to continue.\n\n" +
-						"- Operation cancelled\n" +
-						"  - No changes were made to the records.\n\n" +
-						"- File access issue\n" +
-						"  - Please restart the application and try again.\n\n"+
+						"--- Common Issues & Quick Fixes ---\n\n" +
+						"1. No records found\n" +
+						"   - Solution: Add stock records first.\n\n" +
+						"2. Invalid input\n" +
+						"   - Solution: Enter numbers where required, menu selections must be digits.\n\n" +
+						"3. Inventory appears empty\n" +
+						"   - Solution: Ensure birds, feed, or vaccines are added.\n\n" +
+						"4. Operation cancelled\n" +
+						"   - Solution: Confirm your actions when prompted.\n\n" +
+						"5. File access errors\n" +
+						"   - Solution: Restart the program and try again.\n\n"+
 						"Press ENTER to return to Help Menu..."
 					);
 					read.nextLine();
@@ -49,12 +60,12 @@ public class Help{
 					break;
 				case 2:
 					tools.clearScreen();
-				   System.out.println(
+					System.out.println(
 						"--- Input Guidelines ---\n\n" +
-						"- Enter only positive numbers for stock values.\n" +
-						"- Follow on-screen instructions carefully.\n" +
-						"- Confirm your input when asked.\n" +
-						"- Select menu options using numbers only.\n\n"+
+						"- Use only positive numbers for quantities.\n" +
+						"- Follow prompts carefully for accurate entries.\n" +
+						"- Confirm your entries when requested.\n" +
+						"- Navigate menus using numeric options only.\n\n"+
 						"Press ENTER to return to Help Menu..."
 					);
 					read.nextLine();
@@ -63,12 +74,12 @@ public class Help{
 					break;
 				case 3:
 					tools.clearScreen();
-				    System.out.println(
+					System.out.println(
 						"--- System Limitations ---\n\n" +
-						"- This system supports single-user access only.\n" +
-						"- Records are stored locally.\n" +
-						"- No automatic backup is available.\n" +
-						"- Advanced reporting will be added in future versions.\n\n"+
+						"- Single-user access only.\n" +
+						"- Data is stored locally on your machine.\n" +
+						"- No automated backups available yet.\n" +
+						"- Advanced reporting and analytics coming in future updates.\n\n"+
 						"Press ENTER to return to Help Menu..."
 					);
 					read.nextLine();
@@ -77,27 +88,23 @@ public class Help{
 					break;
 				case 4:
 					tools.clearScreen();
-				    System.out.println(
+					System.out.println(
 						"--- Developer Note ---\n\n" +
-						"This Poultry Farm Management System was developed as a Phase One project.\n\n" +
-						"Future improvements include:\n" +
-						"- Better error handling\n" +
-						"- Improved reports\n" +
+						"This system is a Phase One project for Poultry Farm Management.\n\n" +
+						"Planned enhancements:\n" +
+						"- Robust error handling\n" +
+						"- Comprehensive reporting\n" +
 						"- User authentication\n\n" +
-						"Thank you for using this system.\n\n"+
+						"Your feedback is welcome. Thank you for using the system.\n\n"+
 						"Press ENTER to return to Help Menu..."
 					);
 					read.nextLine();
 					tools.clearScreen();
 					helpMenu(homeCallBack);
 					break;
-				case 0:
-					tools.clearScreen();
-					homeCallBack.run();
-					break;
 				default:
 					tools.clearScreen();
-					System.out.println("Invalid option. Please try again.");
+					System.out.println("Invalid option. Please select a number from the menu.");
 					helpMenu(homeCallBack);
 			}
 		}

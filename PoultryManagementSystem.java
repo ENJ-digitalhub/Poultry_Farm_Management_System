@@ -20,7 +20,18 @@ public class PoultryManagementSystem{
 		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.print("1. Login\n2. Register\n0. Exit\nOption: ");
-		int option=read.nextInt();
+		int option = -1;
+		while(true){
+			try{
+				option = read.nextInt();
+				read.nextLine();
+				break;
+			}catch(java.util.InputMismatchException e){
+				System.out.println("\nInvalid input! Please enter numbers only.");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
 		if (option==0){
 			tools.clearScreen();
 			tools.exit();
@@ -59,7 +70,18 @@ public class PoultryManagementSystem{
 			"0. Logout\n"+
 			"Option: "
 		);
-		int option=read.nextInt();
+		int option = -1;
+		while(true){
+			try{
+				option = read.nextInt();
+				read.nextLine();
+				break;
+			}catch(java.util.InputMismatchException e){
+				System.out.println("\nInvalid input! Please enter numbers only.");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
 		if (option==0){
 			tools.clearScreen();
 			startupPage();

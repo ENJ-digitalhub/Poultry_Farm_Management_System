@@ -17,7 +17,18 @@ public class Inventory{
 		System.out.println(tools.center("STOCK MANAGEMENT MENU",50));
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. View Current Stock\n0. Back\nOptions:");
-		int option=read.nextInt();
+		int option;
+		while(true){
+			try{
+				option=read.nextInt();
+				read.nextLine();
+				break;
+			}catch(Exception e){
+				System.out.println("Invalid input");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
 		if (option==0){
 			tools.clearScreen();
 			homeCallBack.run();
@@ -150,7 +161,18 @@ public class Inventory{
 		System.out.println("0. Back");
 
 		System.out.print("Option: ");
-        int option = read.nextInt();
+        int option;
+		while(true){
+			try{
+				option=read.nextInt();
+				read.nextLine();
+				break;
+			}catch(Exception e){
+				System.out.println("Invalid input");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
         if (option==1){
 			tools.clearScreen();
             viewStockHistory(homeCallBack);
@@ -186,7 +208,18 @@ public class Inventory{
 		}
 		System.out.println("\n0. Back");
 		System.out.print("Option: ");
-		int option = read.nextInt();
+		int option;
+		while(true){
+			try{
+				option=read.nextInt();
+				read.nextLine();
+				break;
+			}catch(Exception e){
+				System.out.println("Invalid input");
+				read.nextLine();
+				System.out.print("Option: ");
+			}
+		}
 		if (option==0){
 			tools.clearScreen();
 			stockMenu(homeCallBack);
