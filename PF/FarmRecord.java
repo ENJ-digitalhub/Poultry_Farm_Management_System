@@ -63,7 +63,7 @@ public class FarmRecord{
 		String [] data = new String [5];
         double eggNo=0, feedNo=0, deathNo=0;
 		String comment="";
-		farmRecords = tools.reader(tools.FARMRECORD);
+		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 		if(farmRecords.size() == 0){
         System.out.println("No previous record found. Creating first farm record...\n");
 		}
@@ -122,13 +122,13 @@ public class FarmRecord{
 			}
 		}
 		double birdNo=deathNo;
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
         String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-        tools.writer(tools.INVENTORY, firstRecord);
+        tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
 		double currentBirdNo=Double.parseDouble(lastInRecord[1]);
@@ -155,10 +155,10 @@ public class FarmRecord{
 		currentFeedNo-=feedNo;
 		lastInRecord[2]=String.valueOf(currentFeedNo);
 		lastInRecord[1]=String.valueOf(currentBirdNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
+		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
 		System.out.println(Arrays.toString(data));
-		tools.writer(tools.FARMRECORD,(Arrays.toString(data)));
+		tools.writer(FileNames.FARMRECORD.getPath(),(Arrays.toString(data)));
         System.out.println(
 			"\nToday's data saved successfully"+
 			"\nPress ENTER to return to Farm Management Menu..."
@@ -168,7 +168,7 @@ public class FarmRecord{
 		farmMenu(homeCallBack);
     }
 	public static void viewRecord(Runnable homeCallBack){
-		farmRecords = tools.reader(tools.FARMRECORD);
+		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 		if(farmRecords.size() == 0 || (farmRecords.size() == 1 && farmRecords.get(0).isEmpty())){
 			System.out.println("No farm records found\n");
 		}
@@ -216,7 +216,7 @@ public class FarmRecord{
 		}
 	}
 	public static void editRecord(Runnable homeCallBack){
-		farmRecords = tools.reader(tools.FARMRECORD);
+		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 		boolean isConfirm=false;
 		String [] data = new String [5];
 		double eggNo=0, feedNo=0, deathNo=0,previousDeathNo=0,previousFeedNo=0;
@@ -278,13 +278,13 @@ public class FarmRecord{
 					}
 				}
 				double birdNo=deathNo;
-				inventoryRecord = tools.reader(tools.INVENTORY);
+				inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 				if(inventoryRecord.size() == 0){
 				System.out.println("No previous record found. Creating first stock record...\n");
 				String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-				tools.writer(tools.INVENTORY, firstRecord);
+				tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 				}
-				inventoryRecord = tools.reader(tools.INVENTORY);
+				inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 				String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 				String [] lastInRecord = lastRecord.split(",\\s");
 				double currentBirdNo=Double.parseDouble(lastInRecord[1]);
@@ -314,11 +314,11 @@ public class FarmRecord{
 				currentFeedNo-=feedNo;
 				lastInRecord[2]=String.valueOf(currentFeedNo);
 				lastInRecord[1]=String.valueOf(currentBirdNo);
-				tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
+				tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 				data = new String[] {date, Double.toString(eggNo), Double.toString(feedNo), Double.toString(deathNo), comment};
 				String updatedRecord = Arrays.toString(data);
 				farmRecords.set(recordIndex, updatedRecord);
-				tools.rewriteFile(farmRecords);
+				tools.rewriteFile(FileNames.FARMRECORD.getPath(),farmRecords);
 				System.out.println("\nRecord edited successfully!");
 				System.out.println("Updated: " + updatedRecord);
 			}

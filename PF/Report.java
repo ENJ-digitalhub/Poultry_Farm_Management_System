@@ -65,7 +65,7 @@ public class Report{
         }
     }
     public static void dailyReport(Runnable homeCallBack){
-        farmRecords = tools.reader(tools.FARMRECORD);
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String lastRecord = farmRecords.get(farmRecords.size()-1).replace("[","").replace("]","");
         String[] lastInRecord = lastRecord.split(",\\s");
@@ -105,7 +105,7 @@ public class Report{
         }
     }
     public static void weeklyReport(Runnable homeCallBack){
-        farmRecords = tools.reader(tools.FARMRECORD);
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         double totalEggs=0,totalFeeds=0,totalDeaths=0,avarageEggs;
         int count;
@@ -155,7 +155,7 @@ public class Report{
         }
     }
     public static void monthlyReport(Runnable homeCallBack){
-        farmRecords = tools.reader(tools.FARMRECORD);
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String lowestEggDate="",highestEggDate="";
         double totalEggs=0,highestEgg=0,lowestEgg=0,totalFeeds=0,totalDeaths=0;
@@ -225,7 +225,7 @@ public class Report{
         }
     }
     public static void reportSummary(Runnable homeCallBack){
-        farmRecords = tools.reader(tools.FARMRECORD);
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String today="";
         double todayEggs=0,thisWeekEgg=0,thisMonthEgg=0;
@@ -297,7 +297,7 @@ public class Report{
         }
     }
     public static void eggGraph(){
-        farmRecords = tools.reader(tools.FARMRECORD);
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
         int count=1;
 
         System.out.println("Egg Production Graph(Last 7 Days)");
@@ -315,8 +315,8 @@ public class Report{
         System.out.println("\n"+"-".repeat(50)+"\n");
     }
     public static void statsSummary(Runnable homeCallBack){
-        inventoryRecord = tools.reader(tools.INVENTORY);
-        farmRecords = tools.reader(tools.FARMRECORD);
+        inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
+        farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String lowestEggDate="XXXX-XX-XX",highestEggDate="XXXX-XX-XX";
         double highestEgg=0,lowestEgg=0;

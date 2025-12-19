@@ -44,8 +44,8 @@ public class User{
         info = new String[] {Integer.toString(sn),firstName,lastName,userName,tools.encrypt(pin)};
         System.out.println(Arrays.toString(info));
 		
-		tools.reader(tools.USERINFO);
-		tools.writer(tools.USERINFO,(Arrays.toString(info)));
+		tools.reader(FileNames.USERINFO.getPath());
+		tools.writer(FileNames.USERINFO.getPath(),(Arrays.toString(info)));
     }
 	public static void login(Runnable startupPageCallBack){
 		System.out.println("Under Construction");

@@ -1,4 +1,5 @@
 package PF;
+
 import PF.*;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class Inventory{
 	public static void addBird(Runnable homeCallBack){
 		double birdNo=0;
 		isConfirm=false;
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		while(isConfirm==false){
 			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
@@ -75,21 +76,21 @@ public class Inventory{
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
         String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-        tools.writer(tools.INVENTORY, firstRecord);
+        tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
 		double previousBirdNo=Double.parseDouble(lastInRecord[1]);
 		birdNo+=previousBirdNo;
 		lastInRecord[1]=String.valueOf(birdNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
+		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}
 	public static void removeBird(Runnable homeCallBack){
 		double birdNo=0;
 		isConfirm=false;
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		while(isConfirm==false){
 			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
@@ -97,9 +98,9 @@ public class Inventory{
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
         String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-        tools.writer(tools.INVENTORY, firstRecord);
+        tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
 		double currentBirdNo=Double.parseDouble(lastInRecord[1]);
@@ -109,13 +110,13 @@ public class Inventory{
 		}
 		currentBirdNo-=birdNo;
 		lastInRecord[1]=String.valueOf(currentBirdNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
+		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}
 	public static void addFeed(Runnable homeCallBack){
 		double feedNo=0;
 		isConfirm=false;
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		while(isConfirm==false){
 			feedNo = tools.getPositiveDoubleInput("Input number of Feed(s): ");
 			isConfirm=tools.confirm(feedNo);
@@ -123,25 +124,25 @@ public class Inventory{
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
         String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-        tools.writer(tools.INVENTORY, firstRecord);
+        tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
 		double previousFeedNo=Double.parseDouble(lastInRecord[2]);
 		feedNo+=previousFeedNo;
 		lastInRecord[2]=String.valueOf(feedNo);
-		tools.writer(tools.INVENTORY,Arrays.toString(lastInRecord));
+		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}	
 	public static void viewStock(Runnable homeCallBack){
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
         String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-        tools.writer(tools.INVENTORY, firstRecord);
+        tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
         double eggNo=0,feedNo=0;
         int count=1;
         boolean done=true;
@@ -188,7 +189,7 @@ public class Inventory{
         }
     }
 	public static void viewStockHistory(Runnable homeCallBack){
-		inventoryRecord = tools.reader(tools.INVENTORY);
+		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		if(inventoryRecord.size() == 0 || (inventoryRecord.size() == 1 && inventoryRecord.get(0).isEmpty())){
 			System.out.println("No farm records found\n");
 		}

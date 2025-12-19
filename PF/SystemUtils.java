@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class SystemUtils{
-	public static final String FARMRECORD = "data\\FarmRecords.txt";
-	public static final String USERINFO = "data\\UsersInfo.txt";
-	public static final String INVENTORY = "data\\Inventory.txt";
 	private static boolean isConfirm=false;
 	static Scanner read = new Scanner(System.in);
 	static ArrayList<String> lines = new ArrayList<>();
@@ -204,12 +201,12 @@ public class SystemUtils{
 		} while(value < 0);
 		return value;
 	}
-	public static void rewriteFile(ArrayList<String> records){
+	public static void rewriteFile(String filePath,ArrayList<String> records){
     try {
-        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(FARMRECORD, false));
+        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(filePath, false));
         clearWriter.write("");
         clearWriter.close();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FARMRECORD, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for(String record : records){
                 if(!record.trim().isEmpty()){ // Skip empty lines
                     writer.write(record);
