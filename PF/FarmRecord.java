@@ -26,7 +26,7 @@ public class FarmRecord{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(java.util.InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("\nInvalid input! Please enter numbers only.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -61,8 +61,9 @@ public class FarmRecord{
 	public static void todayData(Runnable homeCallBack){
         boolean isConfirm=false;
 		String [] data = new String [5];
-        double eggNo=0, feedNo=0, deathNo=0;
-		String comment="";
+        int eggNo=0, deathNo=0;
+		double feedNo=0;
+		String comment="",eggInput="";
 		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 		if(farmRecords.size() == 0){
         System.out.println("No previous record found. Creating first farm record...\n");
@@ -99,9 +100,24 @@ public class FarmRecord{
 			}
 		}
         while(isConfirm==false){
-            eggNo = tools.getPositiveDoubleInput("Input number of Egg(s): "); 
-            isConfirm=tools.confirm(eggNo);
-        }
+			System.out.print("Input number of Crate(s) [Eg. 5 crates, 3 eggs -> 5_3]: ");
+			eggInput = read.nextLine();
+			String[] parts = eggInput.split("_");
+			int crates = Integer.parseInt(parts[0]);
+			int pieces = Integer.parseInt(parts[1]);
+			
+			if (crates<0||pieces<0){
+				System.out.println("Invalid Input. Positive values only");
+			}
+			else{
+				if (pieces >= 30) {
+					crates += pieces / 30;
+					pieces = pieces % 30;
+				}
+				eggNo = (crates * 30) + pieces;
+				isConfirm = tools.confirm(eggInput);
+			}
+		}
         isConfirm=false;
         while(isConfirm==false){
             feedNo = tools.getPositiveDoubleInput("Input number of Feed(s) used: ");
@@ -109,7 +125,7 @@ public class FarmRecord{
         }
         isConfirm=false;
         while(isConfirm==false){
-            deathNo = tools.getPositiveDoubleInput("Input number of Death(s): ");
+            deathNo = tools.getPositiveIntInput("Input number of Death(s): ");
             isConfirm=tools.confirm(deathNo);
         }
 		isConfirm=false;
@@ -121,7 +137,7 @@ public class FarmRecord{
 				comment="null";
 			}
 		}
-		double birdNo=deathNo;
+		int birdNo=deathNo;
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		if(inventoryRecord.size() == 0){
         System.out.println("No previous record found. Creating first stock record...\n");
@@ -131,7 +147,7 @@ public class FarmRecord{
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		double currentBirdNo=Double.parseDouble(lastInRecord[1]);
+		int currentBirdNo=Integer.parseInt(lastInRecord[1]);
 		double currentFeedNo=Double.parseDouble(lastInRecord[2]);
 		if(birdNo>currentBirdNo){
 			System.out.println(
@@ -156,7 +172,7 @@ public class FarmRecord{
 		lastInRecord[2]=String.valueOf(currentFeedNo);
 		lastInRecord[1]=String.valueOf(currentBirdNo);
 		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
-		data = new String[] {time.toLocalDate().toString(),Double.toString(eggNo),Double.toString(feedNo),Double.toString(deathNo),comment};
+		data = new String[] {time.toLocalDate().toString(),Integer.toString(eggNo),Double.toString(feedNo),Integer.toString(deathNo),comment};
 		System.out.println(Arrays.toString(data));
 		tools.writer(FileNames.FARMRECORD.getPath(),(Arrays.toString(data)));
         System.out.println(
@@ -169,57 +185,92 @@ public class FarmRecord{
     }
 	public static void viewRecord(Runnable homeCallBack){
 		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
-		if(farmRecords.size() == 0 || (farmRecords.size() == 1 && farmRecords.get(0).isEmpty())){
+
+		if(farmRecords.size()==0 || (farmRecords.size()==1 && farmRecords.get(0).isEmpty())){
 			System.out.println("No farm records found\n");
-		}
-		else{
-			System.out.println("--- Farm Record History ---");
-			System.out.println("\nDate\t\t|Eggs\t|Feed\t|Death\t|Comment");
-			System.out.println("\n"+"-".repeat(60)+"\n");
-			for(int i = farmRecords.size() - 1; i >= 0; i--){
-				String record = farmRecords.get(i).replace("[","").replace("]","");
-				if(record.trim().isEmpty()) continue;
-				String[] recordData = record.split(",\\s*");
-				if(recordData.length >= 5){
-					String date = recordData[0];
-					double eggNo = Double.parseDouble(recordData[1]);
-					double feedNo = Double.parseDouble(recordData[2]);
-					double deathNo = Double.parseDouble(recordData[3]);
-					String comment = recordData[4];
-					System.out.println(date + "\t|" + eggNo + "\t|" + feedNo + "\t|" + deathNo + "\t|" + comment);
-				}
-			}
-		}
-		System.out.println("\n"+"-".repeat(60)+"\n");
-		System.out.println("\n0. Back");
-		System.out.print("Option: ");
-        int option=-1;
-        while(true){
-            try{
-                option=read.nextInt();
-                read.nextLine();
-                break;
-            }catch(java.util.InputMismatchException e){
-                System.out.println("\nInvalid input! Please enter numbers only.");
-                read.nextLine();
-                System.out.print("Option: ");
-            }
-        }
-		if (option==0){
+			System.out.println("0. Back");
+			read.nextLine();
 			tools.clearScreen();
 			farmMenu(homeCallBack);
+			return;
 		}
-		else{
+
+		int pageSize=10;
+		int start=farmRecords.size()-1;
+
+		while(true){
 			tools.clearScreen();
-			System.out.print("Invalid Input");
-			viewRecord(homeCallBack);
+
+			System.out.println("--- Farm Record History ---");
+			System.out.println("\nDate\t\t|Crates(Eggs)\t|Feed\t|Death\t|Comment");
+			System.out.println("\n"+"-".repeat(60)+"\n");
+
+			int count=0;
+			int i=start;
+
+			while(i>=0 && count<pageSize){
+				String record=farmRecords.get(i).replace("[","").replace("]","");
+				if(!record.trim().isEmpty()){
+					String[] recordData=record.split(",\\s*");
+					if(recordData.length>=5){
+						try{
+							String date=recordData[0];
+							int eggNo=Integer.parseInt(recordData[1]);
+							double feedNo=Double.parseDouble(recordData[2]);
+							int deathNo=Integer.parseInt(recordData[3]);
+							String comment=recordData[4];
+							System.out.println(date+"\t|"+eggNo/30+"("+eggNo%30+")"+"\t|"+feedNo+"\t|"+deathNo+"\t|"+comment);
+							count++;
+						}catch(Exception e){}
+					}
+				}
+				i--;
+			}
+
+			System.out.println("\n"+"-".repeat(60));
+			System.out.println("\nN. Next");
+			System.out.println("P. Previous");
+			System.out.println("0. Back");
+			System.out.print("Option: ");
+
+			String option=read.nextLine().toUpperCase();
+
+			if(option.equals("N")){
+				if(start-pageSize>=0){
+					start-=pageSize;
+				}else{
+					System.out.println("No more records.");
+					System.out.println("Press Enter to continue...");
+					read.nextLine();
+				}
+			}
+			else if(option.equals("P")){
+				if(start+pageSize<farmRecords.size()){
+					start+=pageSize;
+				}else{
+					System.out.println("You are on the first page.");
+					System.out.println("Press Enter to continue...");
+					read.nextLine();
+				}
+			}
+			else if(option.equals("0")){
+				tools.clearScreen();
+				farmMenu(homeCallBack);
+				return;
+			}
+			else{
+				System.out.println("Invalid Input");
+				System.out.println("Press Enter to continue...");
+				read.nextLine();
+			}
 		}
 	}
 	public static void editRecord(Runnable homeCallBack){
 		farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 		boolean isConfirm=false;
 		String [] data = new String [5];
-		double eggNo=0, feedNo=0, deathNo=0,previousDeathNo=0,previousFeedNo=0;
+		int eggNo=0, deathNo=0,previousDeathNo=0;
+		double feedNo=0,previousFeedNo=0;
 		String comment="",date="";
 		boolean recordFound = false;
 		int recordIndex = -1;
@@ -229,7 +280,6 @@ public class FarmRecord{
 		else{
 			System.out.println("--- Farm Record Editor ---");
 			isConfirm=false;
-			read.nextLine(); 
 			while(isConfirm==false){
 				System.out.print("Input Date(\"YYYY-MM-DD\"): ");
 				date = read.nextLine();
@@ -252,11 +302,26 @@ public class FarmRecord{
 			}
 			else{
 				previousFeedNo=Double.parseDouble(recordData[2]);
-				previousDeathNo=Double.parseDouble(recordData[3]);
+				previousDeathNo=Integer.parseInt(recordData[3]);
 				isConfirm=false;
 				while(isConfirm==false){
-					eggNo = tools.getPositiveDoubleInput("Input number of Egg(s): "); 
-					isConfirm=tools.confirm(eggNo);
+					System.out.print("Input number of Crate(s) [Eg. 5 crates, 3 eggs -> 5_3]: ");
+					String eggInput = read.nextLine();
+					String[] parts = eggInput.split("_");
+					int crates = Integer.parseInt(parts[0]);
+					int pieces = Integer.parseInt(parts[1]);
+					
+					if (crates<0||pieces<0){
+						System.out.println("Invalid Input. Positive values only.");
+					}
+					else{
+						if (pieces >= 30) {
+							crates += pieces / 30;
+							pieces = pieces % 30;
+						}
+						eggNo = (crates * 30) + pieces;
+						isConfirm = tools.confirm(eggInput);
+			}
 				}
 				isConfirm=false;
 				while(isConfirm==false){
@@ -265,7 +330,7 @@ public class FarmRecord{
 				}
 				isConfirm=false;
 				while(isConfirm==false){
-					deathNo = tools.getPositiveDoubleInput("Input number of Death(s): ");
+					deathNo = tools.getPositiveIntInput("Input number of Death(s): ");
 					isConfirm=tools.confirm(deathNo);
 				}
 				isConfirm=false;
@@ -277,7 +342,7 @@ public class FarmRecord{
 						comment="null";
 					}
 				}
-				double birdNo=deathNo;
+				int birdNo=deathNo;
 				inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 				if(inventoryRecord.size() == 0){
 				System.out.println("No previous record found. Creating first stock record...\n");
@@ -287,7 +352,7 @@ public class FarmRecord{
 				inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 				String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 				String [] lastInRecord = lastRecord.split(",\\s");
-				double currentBirdNo=Double.parseDouble(lastInRecord[1]);
+				int currentBirdNo=Integer.parseInt(lastInRecord[1]);
 				double currentFeedNo=Double.parseDouble(lastInRecord[2]);
 				if(birdNo>currentBirdNo){
 					System.out.println(
@@ -315,7 +380,7 @@ public class FarmRecord{
 				lastInRecord[2]=String.valueOf(currentFeedNo);
 				lastInRecord[1]=String.valueOf(currentBirdNo);
 				tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
-				data = new String[] {date, Double.toString(eggNo), Double.toString(feedNo), Double.toString(deathNo), comment};
+				data = new String[] {date, Integer.toString(eggNo), Double.toString(feedNo), Integer.toString(deathNo), comment};
 				String updatedRecord = Arrays.toString(data);
 				farmRecords.set(recordIndex, updatedRecord);
 				tools.rewriteFile(FileNames.FARMRECORD.getPath(),farmRecords);
@@ -331,7 +396,7 @@ public class FarmRecord{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(java.util.InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("\nInvalid input! Please enter numbers only.");
                 read.nextLine();
                 System.out.print("Option: ");

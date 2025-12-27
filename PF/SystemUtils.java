@@ -193,7 +193,22 @@ public class SystemUtils{
 			System.out.print(prompt);
 			try {
 				value = read.nextDouble();
-			} catch (java.util.InputMismatchException e) {
+			} catch (Exception e) {
+				System.out.println("Invalid input. Please enter a number.");
+				read.nextLine();
+				value = -1;
+			}
+		} while(value < 0);
+		return value;
+	}
+	public static int getPositiveIntInput(String prompt){
+		int value = -1;
+		do {
+			System.out.print(prompt);
+			try {
+				value = read.nextInt();
+			} 
+			catch (Exception e) {
 				System.out.println("Invalid input. Please enter a number.");
 				read.nextLine();
 				value = -1;

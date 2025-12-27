@@ -57,7 +57,7 @@ public class User{
 				option = read.nextInt();
 				read.nextLine();
 				break;
-			}catch(java.util.InputMismatchException e){
+			}catch(Exception e){
 				System.out.println("\nInvalid input! Please enter numbers only.");
 				read.nextLine();
 				System.out.print("Option: ");

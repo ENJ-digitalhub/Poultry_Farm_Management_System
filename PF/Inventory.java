@@ -66,11 +66,11 @@ public class Inventory{
 		}
 	}
 	public static void addBird(Runnable homeCallBack){
-		double birdNo=0;
+		int birdNo=0;
 		isConfirm=false;
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		while(isConfirm==false){
-			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
+			birdNo = tools.getPositiveIntInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
 		if(inventoryRecord.size() == 0){
@@ -81,18 +81,18 @@ public class Inventory{
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		double previousBirdNo=Double.parseDouble(lastInRecord[1]);
+		int previousBirdNo=Integer.parseInt(lastInRecord[1]);
 		birdNo+=previousBirdNo;
 		lastInRecord[1]=String.valueOf(birdNo);
 		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
 		stockMenu(homeCallBack);
 	}
 	public static void removeBird(Runnable homeCallBack){
-		double birdNo=0;
+		int birdNo=0;
 		isConfirm=false;
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		while(isConfirm==false){
-			birdNo = tools.getPositiveDoubleInput("Input number of Bird(s): ");
+			birdNo = tools.getPositiveIntInput("Input number of Bird(s): ");
 			isConfirm=tools.confirm(birdNo);
 		}
 		if(inventoryRecord.size() == 0){
@@ -103,7 +103,7 @@ public class Inventory{
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
 		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
 		String [] lastInRecord = lastRecord.split(",\\s");
-		double currentBirdNo=Double.parseDouble(lastInRecord[1]);
+		int currentBirdNo=Integer.parseInt(lastInRecord[1]);
 		if(birdNo>currentBirdNo){
 			System.out.println("Insufficient. Total Birds: "+currentBirdNo);
 			stockMenu(homeCallBack);
@@ -143,20 +143,21 @@ public class Inventory{
         tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
 		}
 		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-        double eggNo=0,feedNo=0;
+		int eggNo=0;
+        double feedNo=0;
         int count=1;
         boolean done=true;
         while(done){
             if (inventoryRecord.size()<count)break;
             String lastRecord = inventoryRecord.get(inventoryRecord.size()-count).replace("[","").replace("]","");
             String[] lastInRecord = lastRecord.split(",\\s");
-			eggNo=Double.parseDouble(lastInRecord[1]);
+			eggNo=Integer.parseInt(lastInRecord[1]);
 			feedNo=Double.parseDouble(lastInRecord[2]);
 			done=false;
         }
 		
         System.out.println("--- Current Stock ---");
-        System.out.println("\nEgg(s) \t\t: "+eggNo);
+        System.out.println("\nCrates(Eggs) \t\t: "+eggNo/30 + "(" +eggNo%30+ ")" );
         System.out.println("Feed(s) \t: "+feedNo);
         System.out.println("\n1. Veiw Stock History");
 		System.out.println("0. Back");
@@ -202,9 +203,9 @@ public class Inventory{
 				if(record.trim().isEmpty()) continue;
 				String[] recordData = record.split(",\\s*");
 				String date = recordData[0];
-				double eggNo = Double.parseDouble(recordData[1]);
+				int eggNo = Integer.parseInt(recordData[1]);
 				double feedNo = Double.parseDouble(recordData[2]);
-				System.out.println(date + "\t|" + eggNo + "\t\t|" + feedNo);
+				System.out.println(date + "\t|" +eggNo/30 + "(" +eggNo%30+ ")" + "\t\t|" + feedNo);
 			}
 		}
 		System.out.println("\n0. Back");

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 
 public class Report{
     static LocalDateTime time = LocalDateTime.now();
@@ -24,7 +23,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -71,7 +70,7 @@ public class Report{
         String[] lastInRecord = lastRecord.split(",\\s");
         if (lastInRecord[0].equals(time.toLocalDate().toString())){
             System.out.println("--- Daily Report ("+lastInRecord[0]+") ---");
-            System.out.println("\nEggs\t: "+lastInRecord[1]);
+            System.out.println("\nCrates(Eggs)\t: "+Integer.parseInt(lastInRecord[1])/30 + "(" +Integer.parseInt(lastInRecord[1])%30+ ")" );
             System.out.println("Feed \t: "+lastInRecord[2]);
             System.out.println("Death\t: "+lastInRecord[3]);
             System.out.println("Comment\t: "+lastInRecord[4]);
@@ -88,7 +87,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -106,8 +105,9 @@ public class Report{
     }
     public static void weeklyReport(Runnable homeCallBack){
         farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
-
-        double totalEggs=0,totalFeeds=0,totalDeaths=0,avarageEggs;
+		
+		int totalEggs=0,totalDeaths=0,averageEgg;
+        double totalFeeds=0;
         int count;
 
         for(count=1;count<=7;){
@@ -118,19 +118,19 @@ public class Report{
             String[] lastInRecord = lastRecord.split(",\\s");
 
             if (lastInRecord[0].equals(time.toLocalDate().minusDays(count-1).toString())){
-                totalEggs+=Double.parseDouble(lastInRecord[1]);
+                totalEggs+=Integer.parseInt(lastInRecord[1]);
                 totalFeeds+=Double.parseDouble(lastInRecord[2]);
-                totalDeaths+=Double.parseDouble(lastInRecord[3]);
+                totalDeaths+=Integer.parseInt(lastInRecord[3]);
             }
             count++;
         }
-        avarageEggs=totalEggs/(count-1);
+        averageEgg=totalEggs/(count-1);
 
         System.out.println("--- Weekly Report (Last "+(count-1)+" Days) ---");
-        System.out.println("\nTotal Eggs\t: "+totalEggs);
+        System.out.println("\nTotal Crates(Eggs)\t: "+totalEggs/30 + "(" +totalEggs%30+ ")" );
         System.out.println("Total Feeds\t: "+totalFeeds);
         System.out.println("Total Deaths\t: "+totalDeaths);
-        System.out.println("Average Eggs/Days\t: "+String.format("%.2f",avarageEggs));
+        System.out.println("Average Crates(Eggs)/Days\t: "+String.format("%.2f",averageEgg/30 + "(" +averageEgg%30+ ")" ));
         System.out.print("\n0. Back\nOption: ");
         int option=-1;
         while(true){
@@ -138,7 +138,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -158,7 +158,8 @@ public class Report{
         farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String lowestEggDate="",highestEggDate="";
-        double totalEggs=0,highestEgg=0,lowestEgg=0,totalFeeds=0,totalDeaths=0;
+		int totalEggs=0,highestEgg=0,lowestEgg=0,totalDeaths=0;
+        double totalFeeds=0;
         int count=1;
         boolean done=true;
 
@@ -170,22 +171,22 @@ public class Report{
             String[] lastInRecord = lastRecord.split(",\\s");
 
             if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){
-                if (Double.parseDouble(lastInRecord[1])>highestEgg){
-                    highestEgg=Double.parseDouble(lastInRecord[1]);
+                if (Integer.parseInt(lastInRecord[1])>highestEgg){
+                    highestEgg=Integer.parseInt(lastInRecord[1]);
                     highestEggDate=lastInRecord[0];
                 }
                 if (count==1){
-                    lowestEgg=Double.parseDouble(lastInRecord[1]);
+                    lowestEgg=Integer.parseInt(lastInRecord[1]);
                     lowestEggDate=lastInRecord[0];
                 }
-                if(Double.parseDouble(lastInRecord[1])<lowestEgg){
-                    lowestEgg=Double.parseDouble(lastInRecord[1]);
+                if(Integer.parseInt(lastInRecord[1])<lowestEgg){
+                    lowestEgg=Integer.parseInt(lastInRecord[1]);
                     lowestEggDate=lastInRecord[0];
                 }
 
-                totalEggs+=Double.parseDouble(lastInRecord[1]);
+                totalEggs+=Integer.parseInt(lastInRecord[1]);
                 totalFeeds+=Double.parseDouble(lastInRecord[2]);
-                totalDeaths+=Double.parseDouble(lastInRecord[3]);
+                totalDeaths+=Integer.parseInt(lastInRecord[3]);
             }
             else{
                 done = false;
@@ -194,11 +195,11 @@ public class Report{
         }
 
         System.out.println("--- Monthly Report ("+time.getMonth()+" "+time.getYear()+") ---");
-        System.out.println("\nTotal Eggs\t: "+totalEggs);
+        System.out.println("\nTotal Crates(Eggs)\t: "+totalEggs/30 + "(" +totalEggs%30+ ")" );
         System.out.println("Total Feeds\t: "+totalFeeds);
         System.out.println("Total Deaths\t: "+totalDeaths);
-        System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg+" eggs)");
-        System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg+" eggs)");
+        System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg/30+" crate(s) "+highestEgg%30+" egg(s))");
+        System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg/30+" crate(s) "+lowestEgg%30+" egg(s))");
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
@@ -208,7 +209,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -228,7 +229,7 @@ public class Report{
         farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String today="";
-        double todayEggs=0,thisWeekEgg=0,thisMonthEgg=0;
+        int todayEgg=0,thisWeekEgg=0,thisMonthEgg=0;
         int count=1;
         boolean done=true;
 
@@ -241,10 +242,10 @@ public class Report{
             String[] lastInRecord = lastRecord.split(",\\s");
 
             if (lastInRecord[0].equals(time.toLocalDate().toString())){
-                todayEggs=Double.parseDouble(lastInRecord[1]);
+                todayEgg=Integer.parseInt(lastInRecord[1]);
             }
 
-            thisWeekEgg = 0.0;
+            thisWeekEgg = 0;
             int i = 0;
             int counter = 1;
             while (i <7 && counter <= farmRecords.size()) {
@@ -252,14 +253,14 @@ public class Report{
                 String[] lastInRecordWeek = lastRecordWeek.split(",\\s");
 
                 if (lastInRecordWeek[0].equals(time.toLocalDate().minusDays(i).toString())) {
-                    thisWeekEgg += Double.parseDouble(lastInRecordWeek[1]);
+                    thisWeekEgg += Integer.parseInt(lastInRecordWeek[1]);
                 }
                 counter++;
                 i++;
             }
 
             if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){
-                thisMonthEgg+=Double.parseDouble(lastInRecord[1]);
+                thisMonthEgg+=Integer.parseInt(lastInRecord[1]);
             }
             else{
                 done = false;
@@ -268,9 +269,9 @@ public class Report{
         }
 
         System.out.println("--- Summary Report ---");
-        System.out.println("\nToday Egg\t: "+todayEggs);
-        System.out.println("This Week\t: "+thisWeekEgg);
-        System.out.println("This Month\t: "+thisMonthEgg);
+        System.out.println("\nToday\t: "+todayEgg/30+" crate(s) "+todayEgg%30+" egg(s)");
+        System.out.println("This Week\t: "+thisWeekEgg/30+" crate(s) "+thisWeekEgg%30+" egg(s)");
+        System.out.println("This Month\t: "+thisMonthEgg/30+" crate(s) "+thisMonthEgg%30+" egg(s)");
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
@@ -280,7 +281,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");
@@ -309,7 +310,7 @@ public class Report{
             String lastRecord = farmRecords.get(farmRecords.size()-count).replace("[","").replace("]","");
             String[] lastInRecord = lastRecord.split(",\\s");
 
-            System.out.println(lastInRecord[0]+"\t|\t"+"*".repeat((int)Double.parseDouble(lastInRecord[1]))+" ("+(int)Double.parseDouble(lastInRecord[1])+")");
+            System.out.println(lastInRecord[0]+"\t|\t"+"*".repeat(Integer.parseInt(lastInRecord[1]))+" ("+Integer.parseInt(lastInRecord[1])/30+")");
             count++;
         }
         System.out.println("\n"+"-".repeat(50)+"\n");
@@ -319,7 +320,7 @@ public class Report{
         farmRecords = tools.reader(FileNames.FARMRECORD.getPath());
 
         String lowestEggDate="XXXX-XX-XX",highestEggDate="XXXX-XX-XX";
-        double highestEgg=0,lowestEgg=0;
+        int highestEgg=0,lowestEgg=0;
         int count=1;
         boolean done=true;
 
@@ -329,7 +330,7 @@ public class Report{
             String[] lastInRecord = lastRecord.split(",\\s");
 
             if (tools.monthsOfTheYear(lastInRecord[0]).equals(time.getMonth().toString())){
-                double egg = Double.parseDouble(lastInRecord[1]);
+                int egg = Integer.parseInt(lastInRecord[1]);
 
                 if (egg>highestEgg){
                     highestEgg=egg;
@@ -351,8 +352,8 @@ public class Report{
         }
 
         System.out.println("--- Statistics Summary ---");
-        System.out.println("\nHighest Eggs: \t: "+highestEgg+" eggs on "+highestEggDate);
-        System.out.println("Lowest Eggs: \t: "+lowestEgg+" eggs on "+lowestEggDate);
+        System.out.println("\nHighest Production: \t: "+highestEgg/30 + "crate(s)"+ highestEgg%30+" egg(s) on "+highestEggDate);
+        System.out.println("Lowest Production: \t: "+lowestEgg/30 + "crate(s)"+lowestEgg%30 +" egg(s) on "+lowestEggDate);
         System.out.println("\n0. Back");
 
 		System.out.print("Option: ");
@@ -362,7 +363,7 @@ public class Report{
                 option=read.nextInt();
                 read.nextLine();
                 break;
-            }catch(InputMismatchException e){
+            }catch(Exception e){
                 System.out.println("Invalid input. Enter a number.");
                 read.nextLine();
                 System.out.print("Option: ");

@@ -6,11 +6,9 @@ public enum FileNames {
     INVENTORY("data\\Inventory.txt");
 
     private final String path;
-
     FileNames(String path) {
         this.path = path;
     }
-
     public String getPath() {
         return path;
     }
