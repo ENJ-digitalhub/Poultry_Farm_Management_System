@@ -112,12 +112,14 @@ public class Database {
 			String farmRecordsTable = """
 				CREATE TABLE IF NOT EXISTS farm_records (
 					record_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					record_date TEXT NOT NULL,         -- just the date, matches your data array
 					eggs_collected INTEGER NOT NULL,
-					feeds_used INTEGER NOT NULL,
+					feeds_used REAL NOT NULL,
 					death INTEGER NOT NULL,
 					comment TEXT,
-					created_at TEXT DEFAULT CURRENT_TIMESTAMP
+					created_at TEXT DEFAULT CURRENT_TIMESTAMP -- full date-time automatically
 				);
+
 			""";
 			stmt.execute(farmRecordsTable);
 			

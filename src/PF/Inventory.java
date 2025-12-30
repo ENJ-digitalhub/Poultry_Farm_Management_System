@@ -1,235 +1,188 @@
 package PF;
 
-import PF.*;
 import java.util.Scanner;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.time.LocalDateTime;
 
-public class Inventory{
-	static boolean isConfirm=false;
-	static Scanner read = new Scanner(System.in);
-	static SystemUtils tools = new SystemUtils();
-	static ArrayList <String> inventoryRecord = new ArrayList<String>();
-	static LocalDateTime time = LocalDateTime.now();
-	
-	public static void stockMenu(Runnable homeCallBack){
-		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.println(tools.center("STOCK MANAGEMENT MENU",50));
-		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. View Current Stock\n0. Back\nOptions:");
-		int option;
-		while(true){
-			try{
-				option=read.nextInt();
-				read.nextLine();
-				break;
-			}catch(Exception e){
-				System.out.println("Invalid input");
-				read.nextLine();
-				System.out.print("Option: ");
-			}
-		}
-		if (option==0){
-			tools.clearScreen();
-			homeCallBack.run();
-		}
-		else{
-			switch (option){
-				//add birds
-				case 1:
-					tools.clearScreen();
-					addBird(homeCallBack);
-					break;
-				//remove birds
-				case 2:
-					tools.clearScreen();
-					removeBird(homeCallBack);
-					break;
-				//add Feed
-				case 3:
-					tools.clearScreen();
-					addFeed(homeCallBack);
-					break;
-				//view Stock data
-				case 4:
-					tools.clearScreen();
-					viewStock(homeCallBack);
-					break;
-				//For wrong input
-				default:
-					tools.clearScreen();
-					System.out.println("Invalid selection");
-					stockMenu(homeCallBack);
-					break;
-			}
-		}
-	}
-	public static void addBird(Runnable homeCallBack){
-		int birdNo=0;
-		isConfirm=false;
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		while(isConfirm==false){
-			birdNo = tools.getPositiveIntInput("Input number of Bird(s): ");
-			isConfirm=tools.confirm(birdNo);
-		}
-		if(inventoryRecord.size() == 0){
-		System.out.println("No previous record found. Creating first stock record...\n");
-		String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-		tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
-		}
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
-		int previousBirdNo=Integer.parseInt(lastInRecord[1]);
-		birdNo+=previousBirdNo;
-		lastInRecord[1]=String.valueOf(birdNo);
-		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
-		stockMenu(homeCallBack);
-	}
-	public static void removeBird(Runnable homeCallBack){
-		int birdNo=0;
-		isConfirm=false;
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		while(isConfirm==false){
-			birdNo = tools.getPositiveIntInput("Input number of Bird(s): ");
-			isConfirm=tools.confirm(birdNo);
-		}
-		if(inventoryRecord.size() == 0){
-		System.out.println("No previous record found. Creating first stock record...\n");
-		String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-		tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
-		}
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
-		int currentBirdNo=Integer.parseInt(lastInRecord[1]);
-		if(birdNo>currentBirdNo){
-			System.out.println("Insufficient. Total Birds: "+currentBirdNo);
-			stockMenu(homeCallBack);
-		}
-		currentBirdNo-=birdNo;
-		lastInRecord[1]=String.valueOf(currentBirdNo);
-		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
-		stockMenu(homeCallBack);
-	}
-	public static void addFeed(Runnable homeCallBack){
-		double feedNo=0;
-		isConfirm=false;
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		while(isConfirm==false){
-			feedNo = tools.getPositiveDoubleInput("Input number of Feed(s): ");
-			isConfirm=tools.confirm(feedNo);
-		}
-		if(inventoryRecord.size() == 0){
-		System.out.println("No previous record found. Creating first stock record...\n");
-		String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-		tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
-		}
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		String lastRecord = inventoryRecord.get(inventoryRecord.size()-1).replace("[","").replace("]",""); 
-		String [] lastInRecord = lastRecord.split(",\\s");
-		double previousFeedNo=Double.parseDouble(lastInRecord[2]);
-		feedNo+=previousFeedNo;
-		lastInRecord[2]=String.valueOf(feedNo);
-		tools.writer(FileNames.INVENTORY.getPath(),Arrays.toString(lastInRecord));
-		stockMenu(homeCallBack);
-	}	
-	public static void viewStock(Runnable homeCallBack){
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		if(inventoryRecord.size() == 0){
-		System.out.println("No previous record found. Creating first stock record...\n");
-		String firstRecord = "[" + time.toLocalDate() + ", 0" + ", 0" + "]";
-		tools.writer(FileNames.INVENTORY.getPath(), firstRecord);
-		}
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		int eggNo=0;
-		double feedNo=0;
-		int count=1;
-		boolean done=true;
-		while(done){
-			if (inventoryRecord.size()<count)break;
-			String lastRecord = inventoryRecord.get(inventoryRecord.size()-count).replace("[","").replace("]","");
-			String[] lastInRecord = lastRecord.split(",\\s");
-			eggNo=Integer.parseInt(lastInRecord[1]);
-			feedNo=Double.parseDouble(lastInRecord[2]);
-			done=false;
-		}
-		
-		System.out.println("--- Current Stock ---");
-		System.out.println("\nCrates(Eggs) \t\t: "+eggNo/30 + "(" +eggNo%30+ ")" );
-		System.out.println("Feed(s) \t: "+feedNo);
-		System.out.println("\n1. Veiw Stock History");
-		System.out.println("0. Back");
+public class Inventory {
+    static boolean isConfirm = false;
+    static Scanner read = new Scanner(System.in);
+    static SystemUtils tools = new SystemUtils();
+    static LocalDateTime time = LocalDateTime.now();
 
-		System.out.print("Option: ");
-		int option;
-		while(true){
-			try{
-				option=read.nextInt();
-				read.nextLine();
-				break;
-			}catch(Exception e){
-				System.out.println("Invalid input");
-				read.nextLine();
-				System.out.print("Option: ");
-			}
-		}
-		if (option==1){
-			tools.clearScreen();
-			viewStockHistory(homeCallBack);
-		}	   
-		else if (option==0){
+    public static void stockMenu(Runnable homeCallBack) {
+        System.out.println("\n" + "=".repeat(50) + "\n");
+        System.out.println(tools.center("STOCK MANAGEMENT MENU", 50));
+        System.out.println("\n" + "=".repeat(50) + "\n");
+        System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. View Current Stock\n0. Back\nOption: ");
+
+        int option = -1;
+        while (true) {
+            try {
+                option = read.nextInt();
+                read.nextLine();
+                break;
+            } catch (Exception e) {
+                System.out.println("Invalid input");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
+
+        tools.clearScreen();
+        switch (option) {
+            case 0 -> homeCallBack.run();
+            case 1 -> addBird(homeCallBack);
+            case 2 -> removeBird(homeCallBack);
+            case 3 -> addFeed(homeCallBack);
+            case 4 -> viewStock(homeCallBack);
+            default -> {
+                System.out.println("Invalid selection");
+                stockMenu(homeCallBack);
+            }
+        }
+    }
+    public static void addBird(Runnable homeCallBack) {
+        isConfirm = false;
+        int birdNo = 0;
+        while (!isConfirm) {
+            birdNo = tools.getPositiveIntInput("Input number of Bird(s) to add: ");
+            isConfirm = tools.confirm(birdNo);
+        }
+
+        int currentBirds = tools.getInventory("birds");
+        tools.updateInventory(currentBirds + birdNo, tools.getInventory("feed"));
+
+        System.out.println("\nBirds added successfully.\nPress ENTER to return...");
+        read.nextLine();
+        tools.clearScreen();
+        stockMenu(homeCallBack);
+    }
+    public static void removeBird(Runnable homeCallBack) {
+        isConfirm = false;
+        int birdNo = 0;
+        while (!isConfirm) {
+            birdNo = tools.getPositiveIntInput("Input number of Bird(s) to remove: ");
+            isConfirm = tools.confirm(birdNo);
+        }
+
+        int currentBirds = tools.getInventory("birds");
+        if (birdNo > currentBirds) {
+            System.out.println("Insufficient Birds. Total Birds: " + currentBirds + "\nPress ENTER to return...");
+            read.nextLine();
+            tools.clearScreen();
+            stockMenu(homeCallBack);
+            return;
+        }
+
+        tools.updateInventory(currentBirds - birdNo, tools.getInventory("feed"));
+        System.out.println("\nBirds removed successfully.\nPress ENTER to return...");
+        read.nextLine();
+        tools.clearScreen();
+        stockMenu(homeCallBack);
+    }
+    public static void addFeed(Runnable homeCallBack) {
+        isConfirm = false;
+        double feedNo = 0;
+        while (!isConfirm) {
+            feedNo = tools.getPositiveDoubleInput("Input number of Feed(s) to add: ");
+            isConfirm = tools.confirm(feedNo);
+        }
+
+        double currentFeed = tools.getInventory("feed");
+        tools.updateInventory(tools.getInventory("birds"), currentFeed + feedNo);
+
+        System.out.println("\nFeed added successfully.\nPress ENTER to return...");
+        read.nextLine();
+        tools.clearScreen();
+        stockMenu(homeCallBack);
+    }
+    public static void viewStock(Runnable homeCallBack) {
+        int currentBirds = tools.getInventory("birds");
+        double currentFeed = tools.getInventory("feed");
+
+        System.out.println("--- Current Stock ---");
+        System.out.println("\nCrates(Eggs) \t\t: " + currentBirds / 30 + "(" + currentBirds % 30 + ")");
+        System.out.println("Feed(s) \t: " + currentFeed);
+        System.out.println("\n1. View Stock History");
+        System.out.println("0. Back");
+        System.out.print("Option: ");
+
+        int option = -1;
+        while (true) {
+            try {
+                option = read.nextInt();
+                read.nextLine();
+                break;
+            } catch (Exception e) {
+                System.out.println("Invalid input");
+                read.nextLine();
+                System.out.print("Option: ");
+            }
+        }
+
+        tools.clearScreen();
+        if (option == 1) viewStockHistory(homeCallBack);
+        else stockMenu(homeCallBack);
+    }
+	public static void viewStockHistory(Runnable homeCallBack) {
+		Object[][] inventory = tools.getAllRecords("inventory");
+
+		if (inventory.length == 0) {
+			System.out.println("No inventory records found\n");
+			System.out.println("0. Back");
+			System.out.print("Option: ");
+			read.nextLine();
 			tools.clearScreen();
 			stockMenu(homeCallBack);
+			return;
 		}
-		else{
+
+		int pageSize = 10;
+		int start = inventory.length - 1; // start from the latest record
+
+		while (true) {
 			tools.clearScreen();
-			System.out.print("Invalid Input");
-			viewStock(homeCallBack);
-		}
-	}
-	public static void viewStockHistory(Runnable homeCallBack){
-		inventoryRecord = tools.reader(FileNames.INVENTORY.getPath());
-		if(inventoryRecord.size() == 0 || (inventoryRecord.size() == 1 && inventoryRecord.get(0).isEmpty())){
-			System.out.println("No farm records found\n");
-		}
-		else{
-			System.out.println("--- Farm Record History ---");
-			System.out.println("\nDate\t\t|Eggs\t\t|Feeds");
+			System.out.println("--- Inventory History ---");
+			System.out.println("\nDate\t\t|Birds\t|Feeds");
 			System.out.println("-".repeat(50));
-			for(int i = inventoryRecord.size() - 1; i >= 0; i--){
-				String record = inventoryRecord.get(i).replace("[","").replace("]","");
-				if(record.trim().isEmpty()) continue;
-				String[] recordData = record.split(",\\s*");
-				String date = recordData[0];
-				int eggNo = Integer.parseInt(recordData[1]);
-				double feedNo = Double.parseDouble(recordData[2]);
-				System.out.println(date + "\t|" +eggNo/30 + "(" +eggNo%30+ ")" + "\t\t|" + feedNo);
+
+			int count = 0;
+			int i = start;
+			while (i >= 0 && count < pageSize) {
+				Object[] record = inventory[i];
+				String date = record[0].toString();
+				int birds = (int) record[1];
+				double feeds = (double) record[2];
+				System.out.println(date + "\t|" + birds + "\t|" + feeds);
+				i--;
+				count++;
 			}
-		}
-		System.out.println("\n0. Back");
-		System.out.print("Option: ");
-		int option;
-		while(true){
-			try{
-				option=read.nextInt();
+
+			System.out.println("-".repeat(50));
+			System.out.println("\nN. Next Page\tP. Previous Page\t0. Back");
+			System.out.print("Option: ");
+			String option = read.nextLine().toUpperCase();
+
+			if (option.equals("N")) {
+				if (start - pageSize >= 0) start -= pageSize;
+				else {
+					System.out.println("No more records.\nPress ENTER to continue...");
+					read.nextLine();
+				}
+			} else if (option.equals("P")) {
+				if (start + pageSize < inventory.length) start += pageSize;
+				else {
+					System.out.println("You are on the first page.\nPress ENTER to continue...");
+					read.nextLine();
+				}
+			} else if (option.equals("0")) {
+				tools.clearScreen();
+				stockMenu(homeCallBack);
+				return;
+			} else {
+				System.out.println("Invalid input.\nPress ENTER to continue...");
 				read.nextLine();
-				break;
-			}catch(Exception e){
-				System.out.println("Invalid input");
-				read.nextLine();
-				System.out.print("Option: ");
 			}
-		}
-		if (option==0){
-			tools.clearScreen();
-			stockMenu(homeCallBack);
-		}
-		else{
-			tools.clearScreen();
-			System.out.print("Invalid Input");
-			viewStockHistory(homeCallBack);
 		}
 	}
 }

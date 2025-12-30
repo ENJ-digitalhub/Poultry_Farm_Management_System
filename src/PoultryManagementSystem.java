@@ -119,7 +119,6 @@ public class PoultryManagementSystem{
 	}
 	public static void main(String[] args){
 		PoultryManagementSystem PSM = new PoultryManagementSystem();
-		//startupPage();
-		PSM.home();
+		startupPage();
 	}
 }
