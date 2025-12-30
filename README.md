@@ -118,9 +118,9 @@ java PoultryManagementSystem
 | Phase | Features / Improvements                                                                              | Status     |
 | :---- | :--------------------------------------------------------------------------------------------------- | :--------- |
 | 1.5   | Login & PIN authentication, Broken Egg Analysis, SQLite Integration, Improved Reporting & Validation | ✅ Ongoing  |
-| 2     | EXE installer, Improved CLI interface, Better UX & error handling                                    | ⚠️ Planned |
+| 2.0   | EXE installer, Improved CLI interface, Better UX & error handling                                    | ⚠️ Planned |
 | 2.5   | CSV export, Advanced data visualization, Custom reporting, Broken egg analytics                      | ⚠️ Planned |
-| 3     | Multi-user support, Predictive analytics, Real-time dashboard                                        | ⚠️ Planned |
+| 3.0   | Multi-user support, Predictive analytics, Real-time dashboard                                        | ⚠️ Planned |
 
 ---
 
