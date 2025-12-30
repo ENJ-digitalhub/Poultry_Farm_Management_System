@@ -215,7 +215,9 @@ Currently unlicensed. Contact maintainer for usage rights.
 ## 👤 Author
 
 **Maintainer:** ENJ Digital Hub
+
 **Project Status:** Active Development (Phase 1.5 Ongoing)
+
 **Version:** 1.5 – Current Work in Progress
 
 "Efficient farming begins with organized data management."
