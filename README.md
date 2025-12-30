@@ -65,8 +65,6 @@ Modular Java architecture with separate components for farm data recording, inve
 | `SystemUtils.java` | Utility functions (encryption, file I/O, validation) |
 | `User.java`        | User registration and authentication system          |
 | `Help.java`        | Help system for navigating the CLI                   |
-| `TEL.java`         | Additional utility/helper functions                  |
-| `DeepSeq2.java`    | Advanced reporting/analysis module                   |
 
 ### Data Structure
 
