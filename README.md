@@ -174,10 +174,8 @@ Poultry_Farm_Management_System/
 │   ├── FileNames.java              
 │   ├── Help.java                   
 │   ├── Inventory.java              
-│   ├── Report.java                 
-│   ├── SystemUtils.java            
-│   ├── TEL.java
-│   └── DeepSeq2.java
+│   ├── Report.java                           
+│   └── SystemUtils.java
 ├── data/                           
 │   ├── FarmRecords.txt            
 │   ├── Inventory.txt              
