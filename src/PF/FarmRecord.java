@@ -29,24 +29,49 @@ public class FarmRecord {
 
 		tools.clearScreen();
 		switch (option) {
-			case 0 -> homeCallBack.run();
-			case 1 -> todayData(homeCallBack);
-			case 2 -> viewRecord(homeCallBack);
-			case 3 -> editRecord(homeCallBack);
-			default -> {
+			case 0:
+				tools.clearScreen();
+				homeCallBack.run();
+				break;
+			case 1:
+				tools.clearScreen();
+				todayData(homeCallBack);
+				break;
+			case 2:
+				tools.clearScreen();
+				viewRecord(homeCallBack);
+				break;
+			case 3:
+				tools.clearScreen();
+				editRecord(homeCallBack);
+				break;
+			default:
+				tools.clearScreen();
 				System.out.println("Invalid selection");
 				farmMenu(homeCallBack);
-			}
+				break;
 		}
 	}
 	public static void todayData(Runnable homeCallBack) {
 		boolean isConfirm = false;
-		int eggNo = 0, deathNo = 0, brokenEggs = 0;
+		int eggNo = 0, brokenEggNo = 0, deathNo = 0;
 		double feedNo = 0;
 		String comment = "", eggInput = "";
-
+		
 		String today = time.toLocalDate().toString();
-		if (tools.recordExists("farm_records", "record_date", today)) {
+		Object[][] allRecords = tools.getAllRecords("farm_records");
+		boolean recordExists = false;
+		
+		for (Object[] record : allRecords) {
+			// created_at is at index 5 (0=record_id, 1=eggs, 2=feed, 3=death, 4=comment, 5=created_at)
+			String recordDate = record[5].toString().split(" ")[0];
+			if (recordDate.equals(today)) {
+				recordExists = true;
+				break;
+			}
+		}
+		
+		if (recordExists) {
 			System.out.println("Record Already Exists");
 			while (!isConfirm) {
 				System.out.print("\nDo you want to edit past record (Y/N)? ");
@@ -67,9 +92,9 @@ public class FarmRecord {
 			}
 		}
 
-		// Eggs input
+		// Eggs input - Your original crate format logic
 		while (!isConfirm) {
-			System.out.print("Input number of Crate(s) [Eg. 5_3]: ");
+			System.out.print("Input number of Crate(s) [Eg. 5_3-> 5 crates,3 eggs]: ");
 			eggInput = read.nextLine();
 			try {
 				String[] parts = eggInput.split("_");
@@ -89,7 +114,14 @@ public class FarmRecord {
 				System.out.println("Invalid format. Use crate_eggs format.");
 			}
 		}
-
+		
+		// Broken egg input
+		isConfirm = false;
+		while (!isConfirm) {
+			brokenEggNo = tools.getPositiveIntInput("Input number of broken Egg(s): ");
+			isConfirm = tools.confirm(brokenEggNo);
+		}
+		
 		// Feed input
 		isConfirm = false;
 		while (!isConfirm) {
@@ -104,13 +136,6 @@ public class FarmRecord {
 			isConfirm = tools.confirm(deathNo);
 		}
 
-		// Broken eggs input
-		isConfirm = false;
-		while (!isConfirm) {
-			brokenEggs = tools.getPositiveIntInput("Input number of Broken Egg(s): ");
-			isConfirm = tools.confirm(brokenEggs);
-		}
-
 		// Comment input
 		isConfirm = false;
 		while (!isConfirm) {
@@ -120,10 +145,23 @@ public class FarmRecord {
 			isConfirm = tools.confirm(comment);
 		}
 
-		// Update Inventory
-		int currentBirds = tools.getInventory("birds");
-		double currentFeed = tools.getInventory("feed");
+		// Get inventory - need to check if exists first
+		Object[][] inventoryData = tools.getAllRecords("inventory");
+		if (inventoryData.length == 0) {
+			System.out.println("No inventory found. Please add inventory first.");
+			System.out.println("Press ENTER to return...");
+			read.nextLine();
+			tools.clearScreen();
+			farmMenu(homeCallBack);
+			return;
+		}
+		
+		// Get latest inventory - assuming last one is latest
+		Object[] latestInventory = inventoryData[inventoryData.length - 1];
+		int currentBirds = Integer.parseInt(latestInventory[1].toString());  // bird_no
+		double currentFeed = Double.parseDouble(latestInventory[3].toString());  // feeds_no
 
+		// Check inventory - your original logic
 		if (deathNo > currentBirds) {
 			System.out.println("Insufficient. Total Birds: " + currentBirds);
 			read.nextLine();
@@ -140,10 +178,19 @@ public class FarmRecord {
 			return;
 		}
 
-		tools.updateInventory(currentBirds - deathNo, currentFeed - feedNo);
+		// Update Inventory - calculate new values
+		int newBirdCount = currentBirds - deathNo;
+		double newFeedCount = currentFeed - feedNo;
+		int currentEggs = Integer.parseInt(latestInventory[2].toString());
+		int newEggCount = currentEggs + eggNo; // Add collected eggs to inventory
+		
+		// Update inventory in database
+		Object[] inventoryValues = {newBirdCount, newEggCount, newFeedCount};
+		tools.addRecord("inventory",  inventoryValues);
 
-		// Add farm record to DB
-		Object[] values = {today, eggNo, feedNo, deathNo, brokenEggs, comment};
+		// Add farm record to DB - your database schema
+		// farm_records: eggs_collected, feeds_used, death, comment (created_at is auto)
+		Object[] values = {eggNo,brokenEggNo, feedNo, deathNo, comment};
 		tools.addRecord("farm_records", values);
 
 		System.out.println("\nToday's data saved successfully\nPress ENTER to return...");
@@ -154,7 +201,8 @@ public class FarmRecord {
 	public static void viewRecord(Runnable homeCallBack) {
 		Object[][] records = tools.getAllRecords("farm_records");
 		if (records.length == 0) {
-			System.out.println("No farm records found\n0. Back");
+			System.out.println("No record found"+
+										"Press ENTER to return...");
 			read.nextLine();
 			tools.clearScreen();
 			farmMenu(homeCallBack);
@@ -168,13 +216,25 @@ public class FarmRecord {
 		while (true) {
 			tools.clearScreen();
 			System.out.println("--- Farm Record History ---");
-			System.out.println("\nDate\t|Crates(Eggs)\t|Feed\t|Death\t|Broken\t|Comment");
+			System.out.println("\nDate\t|Crates(Eggs)\t|Feed\t|Death\t|Comment");
 			System.out.println("-".repeat(60));
 
-			Object[][] pageRecords = tools.getPage(records, page, pageSize);
-			for (Object[] record : pageRecords) {
-				System.out.println(record[1] + "\t|" + ((int) record[2] / 30) + "(" + ((int) record[2] % 30) + ")\t|" +
-						record[3] + "\t|" + record[4] + "\t|" + record[5] + "\t|" + record[6]);
+			// Get current page - your original display format
+			int startIdx = (page - 1) * pageSize;
+			int endIdx = Math.min(startIdx + pageSize, records.length);
+			
+			for (int i = startIdx; i < endIdx; i++) {
+				Object[] record = records[i];
+				// Indices: 0=record_id, 1=eggs_collected, 2=feeds_used, 3=death, 4=comment, 5=created_at
+				String date = record[5].toString().split(" ")[0];
+				int totalEggs = Integer.parseInt(record[1].toString());
+				int crates = totalEggs / 30;
+				int pieces = totalEggs % 30;
+				
+				// Your original display format
+				System.out.println(date + "\t|" + crates + "(" + pieces + ")\t|" +
+						record[2] + "\t|" + record[3] + "\t|" + 
+						(record[4] != null ? record[4].toString() : ""));
 			}
 
 			System.out.println("-".repeat(60));
@@ -192,39 +252,123 @@ public class FarmRecord {
 	public static void editRecord(Runnable homeCallBack) {
 		System.out.println("--- Farm Record Editor ---");
 		boolean isConfirm = false;
-		String date = "";
-
-		while (!isConfirm) {
-			System.out.print("Input Date(\"YYYY-MM-DD\"): ");
-			date = read.nextLine();
-			isConfirm = tools.confirm(date);
-		}
-
-		Object[] record = tools.getRecordByDate("farm_records", "record_date", date);
-		if (record == null) {
-			System.out.println("No record found for date: " + date + "\nPress ENTER to return...");
+		
+		// Show recent records first
+		Object[][] records = tools.getAllRecords("farm_records");
+		if (records.length == 0) {
+			System.out.println("No farm records found.");
+			System.out.println("Press ENTER to return...");
 			read.nextLine();
 			tools.clearScreen();
 			farmMenu(homeCallBack);
 			return;
 		}
-
-		int previousDeath = (int) record[3];
-		double previousFeed = (double) record[2];
-
-		int eggNo = tools.getUpdatedEggs();
-		double feedNo = tools.getUpdatedFeed();
-		int deathNo = tools.getUpdatedDeaths();
-		int brokenEggs = tools.getUpdatedBrokenEggs();
-		String comment = tools.getUpdatedComment();
-
-		int currentBirds = tools.getInventory("birds") + previousDeath - deathNo;
-		double currentFeed = tools.getInventory("feed") + previousFeed - feedNo;
-		tools.updateInventory(currentBirds, currentFeed);
-
-		Object[] values = {eggNo, feedNo, deathNo, brokenEggs, comment};
-		tools.updateRecord("farm_records", new String[]{"eggs", "feed", "deaths", "broken_eggs", "comment"}, values, "record_date = '" + date + "'");
-
+		
+		// Get record ID to edit
+		System.out.println("\nRecent Records:");
+		System.out.println("ID\tDate\t\tEggs\tFeed\tDeaths");
+		System.out.println("-".repeat(50));
+		int showCount = Math.min(5, records.length);
+		for (int i = 0; i < showCount; i++) {
+			Object[] record = records[i];
+			String date = record[5].toString().split(" ")[0];
+			System.out.println(record[0] + "\t" + date + "\t" + 
+							   record[1] + "\t" + record[2] + "\t" + record[3]);
+		}
+		
+		System.out.print("\nEnter Record ID to edit (or 0 to cancel): ");
+		int recordId = -1;
+		while (true) {
+			try {
+				recordId = read.nextInt();
+				read.nextLine();
+				if (recordId == 0) {
+					tools.clearScreen();
+					farmMenu(homeCallBack);
+					return;
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println("Please enter a valid record ID number:");
+				read.nextLine();
+			}
+		}
+		
+		// Find the record
+		Object[] recordToEdit = null;
+		for (Object[] record : records) {
+			if (Integer.parseInt(record[0].toString()) == recordId) {
+				recordToEdit = record;
+				break;
+			}
+		}
+		
+		if (recordToEdit == null) {
+			System.out.println("Record ID " + recordId + " not found.");
+			System.out.println("Press ENTER to return...");
+			read.nextLine();
+			tools.clearScreen();
+			farmMenu(homeCallBack);
+			return;
+		}
+		
+		// Get previous values for inventory adjustment
+		int previousEggs = Integer.parseInt(recordToEdit[1].toString());
+		double previousFeed = Double.parseDouble(recordToEdit[2].toString());
+		int previousDeath = Integer.parseInt(recordToEdit[3].toString());
+		
+		// Get updated values - simpler approach
+		System.out.println("\nEnter new values:");
+		
+		// Eggs
+		int eggNo = -1;
+		while (eggNo < 0) {
+			eggNo = tools.getPositiveIntInput("Input number of Eggs collected: ");
+		}
+		
+		// Feed
+		double feedNo = -1;
+		while (feedNo < 0) {
+			feedNo = tools.getPositiveDoubleInput("Input amount of Feed used: ");
+		}
+		
+		// Deaths
+		int deathNo = -1;
+		while (deathNo < 0) {
+			deathNo = tools.getPositiveIntInput("Input number of Deaths: ");
+		}
+		
+		// Comment
+		System.out.print("Comment: ");
+		String comment = read.nextLine();
+		if (comment.isEmpty()) comment = "null";
+		
+		// Update farm record
+		Object[] values = {eggNo, feedNo, deathNo, comment};
+		String[] columns = {"eggs_collected", "feeds_used", "death", "comment"};
+		String condition = "record_id = " + recordId;
+		
+		tools.updateRecord("farm_records", columns, values, condition);
+		
+		// Update inventory based on differences
+		int eggDiff = eggNo - previousEggs;
+		double feedDiff = feedNo - previousFeed;
+		int deathDiff = deathNo - previousDeath;
+		
+		// Get and update inventory
+		Object[][] inventoryData = tools.getAllRecords("inventory");
+		if (inventoryData.length > 0) {
+			Object[] latestInventory = inventoryData[inventoryData.length - 1];
+			int currentBirds = Integer.parseInt(latestInventory[1].toString()) - deathDiff;
+			int currentEggs = Integer.parseInt(latestInventory[2].toString()) + eggDiff; // Add egg difference
+			double currentFeed = Double.parseDouble(latestInventory[3].toString()) - feedDiff;
+			
+			Object[] inventoryValues = {currentBirds, currentEggs, currentFeed};
+			String[] inventoryColumns = {"bird_no", "eggs_no", "feeds_no"};
+			tools.updateRecord("inventory", inventoryColumns, inventoryValues, 
+							   "inventory_id = " + latestInventory[0]);
+		}
+		
 		System.out.println("\nRecord updated successfully!\nPress ENTER to return...");
 		read.nextLine();
 		tools.clearScreen();

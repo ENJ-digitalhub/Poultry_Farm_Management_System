@@ -3,91 +3,91 @@ import PF.SystemUtils;
 import java.util.Scanner;
 
 public class Help {
-    static Scanner read = new Scanner(System.in);
-    static SystemUtils tools = new SystemUtils();
+	static Scanner read = new Scanner(System.in);
+	static SystemUtils tools = new SystemUtils();
 
-    public static void helpMenu(Runnable homeCallBack) {
-        while (true) {
-            tools.clearScreen();
-            System.out.println("\n" + "=".repeat(50) + "\n");
-            System.out.println(tools.center("HELP MENU", 50));
-            System.out.println("\n" + "=".repeat(50) + "\n");
-            System.out.println(
-                "1. Common Issues and Solutions\n" +
-                "2. Input Guidelines\n" +
-                "3. System Limitations\n" +
-                "4. Contact / Developer Note\n" +
-                "0. Back\n" +
-                "Option: "
-            );
+	public static void helpMenu(Runnable homeCallBack) {
+		while (true) {
+			tools.clearScreen();
+			System.out.println("\n" + "=".repeat(50) + "\n");
+			System.out.println(tools.center("HELP MENU", 50));
+			System.out.println("\n" + "=".repeat(50) + "\n");
+			System.out.println(
+				"1. Common Issues and Solutions\n" +
+				"2. Input Guidelines\n" +
+				"3. System Limitations\n" +
+				"4. Contact / Developer Note\n" +
+				"0. Back\n" +
+				"Option: "
+			);
 
-            int option = tools.getPositiveIntInput("");
+			int option = tools.getPositiveIntInput("");
 
-            if (option == 0) {
-                tools.clearScreen();
-                homeCallBack.run();
-                break;
-            }
+			if (option == 0) {
+				tools.clearScreen();
+				homeCallBack.run();
+				break;
+			}
 
-            tools.clearScreen();
-            switch (option) {
-                case 1:
-                    System.out.println(
-                        "--- Common Issues & Quick Fixes ---\n\n" +
-                        "1. No records found\n" +
-                        "   - Solution: Add stock records first.\n\n" +
-                        "2. Invalid input\n" +
-                        "   - Solution: Enter numbers where required, menu selections must be digits.\n\n" +
-                        "3. Inventory appears empty\n" +
-                        "   - Solution: Ensure birds, feed, or vaccines are added.\n\n" +
-                        "4. Operation cancelled\n" +
-                        "   - Solution: Confirm your actions when prompted.\n\n" +
-                        "5. File access errors\n" +
-                        "   - Solution: Restart the program and try again.\n\n" +
-                        "Press ENTER to return to Help Menu..."
-                    );
-                    read.nextLine();
-                    break;
-                case 2:
-                    System.out.println(
-                        "--- Input Guidelines ---\n\n" +
-                        "- Use only positive numbers for quantities.\n" +
-                        "- Follow prompts carefully for accurate entries.\n" +
-                        "- Confirm your entries when requested.\n" +
-                        "- Navigate menus using numeric options only.\n\n" +
-                        "Press ENTER to return to Help Menu..."
-                    );
-                    read.nextLine();
-                    break;
-                case 3:
-                    System.out.println(
-                        "--- System Limitations ---\n\n" +
-                        "- Single-user access only.\n" +
-                        "- Data is stored locally on your machine.\n" +
-                        "- No automated backups available yet.\n" +
-                        "- Advanced reporting and analytics coming in future updates.\n\n" +
-                        "Press ENTER to return to Help Menu..."
-                    );
-                    read.nextLine();
-                    break;
-                case 4:
-                    System.out.println(
-                        "--- Developer Note ---\n\n" +
-                        "This system is a Phase One project for Poultry Farm Management.\n\n" +
-                        "Planned enhancements:\n" +
-                        "- Robust error handling\n" +
-                        "- Comprehensive reporting\n" +
-                        "- User authentication\n\n" +
-                        "Your feedback is welcome. Thank you for using the system.\n\n" +
-                        "Press ENTER to return to Help Menu..."
-                    );
-                    read.nextLine();
-                    break;
-                default:
-                    System.out.println("Invalid option. Please select a number from the menu.");
-                    read.nextLine();
-                    break;
-            }
-        }
-    }
+			tools.clearScreen();
+			switch (option) {
+				case 1:
+					System.out.println(
+						"--- Common Issues & Quick Fixes ---\n\n" +
+						"1. No records found\n" +
+						"   - Solution: Add stock records first.\n\n" +
+						"2. Invalid input\n" +
+						"   - Solution: Enter numbers where required, menu selections must be digits.\n\n" +
+						"3. Inventory appears empty\n" +
+						"   - Solution: Ensure birds, feed, or vaccines are added.\n\n" +
+						"4. Operation cancelled\n" +
+						"   - Solution: Confirm your actions when prompted.\n\n" +
+						"5. File access errors\n" +
+						"   - Solution: Restart the program and try again.\n\n" +
+						"Press ENTER to return to Help Menu..."
+					);
+					read.nextLine();
+					break;
+				case 2:
+					System.out.println(
+						"--- Input Guidelines ---\n\n" +
+						"- Use only positive numbers for quantities.\n" +
+						"- Follow prompts carefully for accurate entries.\n" +
+						"- Confirm your entries when requested.\n" +
+						"- Navigate menus using numeric options only.\n\n" +
+						"Press ENTER to return to Help Menu..."
+					);
+					read.nextLine();
+					break;
+				case 3:
+					System.out.println(
+						"--- System Limitations ---\n\n" +
+						"- Single-user access only.\n" +
+						"- Data is stored locally on your machine.\n" +
+						"- No automated backups available yet.\n" +
+						"- Advanced reporting and analytics coming in future updates.\n\n" +
+						"Press ENTER to return to Help Menu..."
+					);
+					read.nextLine();
+					break;
+				case 4:
+					System.out.println(
+						"--- Developer Note ---\n\n" +
+						"This system is a Phase One project for Poultry Farm Management.\n\n" +
+						"Planned enhancements:\n" +
+						"- Robust error handling\n" +
+						"- Comprehensive reporting\n" +
+						"- User authentication\n\n" +
+						"Your feedback is welcome. Thank you for using the system.\n\n" +
+						"Press ENTER to return to Help Menu..."
+					);
+					read.nextLine();
+					break;
+				default:
+					System.out.println("Invalid option. Please select a number from the menu.");
+					read.nextLine();
+					break;
+			}
+		}
+	}
 }

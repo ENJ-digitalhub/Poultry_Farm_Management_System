@@ -63,11 +63,15 @@ public class Report{
 		}
 	}
 	public static void dailyReport(Runnable homeCallBack){
-		Object[] lastRecord = tools.getRecordByDate("FarmRecord","date",time.toLocalDate().toString());
+		// FIXED: Use correct table name (farm_records) and column name (created_at)
+		Object[] lastRecord = tools.getRecordByDate("farm_records", "created_at", time.toLocalDate().toString());
 
 		if (lastRecord != null){
-			System.out.println("--- Daily Report ("+lastRecord[0]+") ---");
-			System.out.println("\nCrates(Eggs)\t: "+Integer.parseInt(lastRecord[1].toString())/30 + "(" +Integer.parseInt(lastRecord[1].toString())%30+ ")" );
+			System.out.println("--- Daily Report ("+time.toLocalDate()+") ---");
+			// FIXED: Correct indices for farm_records table
+			// 0=record_id, 1=eggs_collected, 2=feeds_used, 3=death, 4=comment, 5=created_at
+			int eggs = Integer.parseInt(lastRecord[1].toString());
+			System.out.println("\nCrates(Eggs)\t: "+(eggs/30) + "(" +(eggs%30)+ ")" );
 			System.out.println("Feed \t: "+lastRecord[2]);
 			System.out.println("Death\t: "+lastRecord[3]);
 			System.out.println("Comment\t: "+lastRecord[4]);
@@ -88,28 +92,41 @@ public class Report{
 		}
 	}
 	public static void weeklyReport(Runnable homeCallBack){
-		ArrayList<Object[]> records = new ArrayList<>();
+		ArrayList<ArrayList<Object>> allRecords = tools.readTable("farm_records");
+		ArrayList<ArrayList<Object>> weeklyRecords = new ArrayList<>();
+		
 		for(int i=0;i<7;i++){
-			Object[] rec = tools.getRecordByDate("FarmRecord","date",time.toLocalDate().minusDays(i).toString());
-			if(rec != null) records.add(rec);
+			String dateToCheck = time.toLocalDate().minusDays(i).toString();
+			
+			for(ArrayList<Object> rec : allRecords){
+				if(rec.size() > 5){ // Make sure record has created_at at index 5
+					String recordDate = rec.get(5).toString().split(" ")[0];
+					if(recordDate.equals(dateToCheck)){
+						weeklyRecords.add(rec);
+						break;
+					}
+				}
+			}
 		}
 
 		int totalEggs=0,totalDeaths=0,averageEgg;
 		double totalFeeds=0;
 
-		for(Object[] r : records){
-			totalEggs+=Integer.parseInt(r[1].toString());
-			totalFeeds+=Double.parseDouble(r[2].toString());
-			totalDeaths+=Integer.parseInt(r[3].toString());
+		for(ArrayList<Object> r : weeklyRecords){
+			if(r.size() > 3){ // Check if record has enough data
+				totalEggs+=Integer.parseInt(r.get(1).toString());
+				totalFeeds+=Double.parseDouble(r.get(2).toString());
+				totalDeaths+=Integer.parseInt(r.get(3).toString());
+			}
 		}
 
-		averageEgg = (records.size() > 0) ? totalEggs / records.size() : 0;
+		averageEgg = (weeklyRecords.size() > 0) ? totalEggs / weeklyRecords.size() : 0;
 
-		System.out.println("--- Weekly Report (Last "+records.size()+" Days) ---");
+		System.out.println("--- Weekly Report (Last "+weeklyRecords.size()+" Days) ---");
 		System.out.println("\nTotal Crates(Eggs)\t: "+totalEggs/30 + "(" +totalEggs%30+ ")" );
 		System.out.println("Total Feeds\t: "+totalFeeds);
 		System.out.println("Total Deaths\t: "+totalDeaths);
-		System.out.println("Average Crates(Eggs)/Days\t: "+String.format("%.2f",averageEgg/30 + "(" +averageEgg%30+ ")" ));
+		System.out.println("Average Crates(Eggs)/Days\t: "+ (averageEgg/30) + "(" +(averageEgg%30)+ ")" );
 
 		System.out.print("\n0. Back\nOption: ");
 		int option = tools.getPositiveIntInput("");
@@ -121,30 +138,50 @@ public class Report{
 			System.out.print("Invalid Input");
 			weeklyReport(homeCallBack);
 		}
-	}
+	}	
 	public static void monthlyReport(Runnable homeCallBack){
-		ArrayList<Object[]> records = new ArrayList<>();
-		for(Object[] r : tools.readTable("FarmRecord")){
-			if(tools.monthsOfTheYear(r[0].toString()).equals(time.getMonth().toString())){
-				records.add(r);
+		ArrayList<ArrayList<Object>> allRecords = tools.readTable("farm_records");
+		ArrayList<ArrayList<Object>> monthlyRecords = new ArrayList<>();
+		
+		for(ArrayList<Object> r : allRecords){
+			if(r.size() > 5){ // Check if record has created_at
+				String recordDate = r.get(5).toString().split(" ")[0];
+				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
+					monthlyRecords.add(r);
+				}
 			}
 		}
 
-		if(records.isEmpty()){
+		if(monthlyRecords.isEmpty()){
 			System.out.println("No record found.");
 		} else {
-			int totalEggs=0,totalDeaths=0,highestEgg=0,lowestEgg=Integer.parseInt(records.get(0)[1].toString());
+			int totalEggs=0,totalDeaths=0,highestEgg=0;
+			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(1).toString()) : 0;
 			double totalFeeds=0;
-			String highestEggDate="",lowestEggDate=records.get(0)[0].toString();
+			String highestEggDate="",lowestEggDate="";
+			
+			if(monthlyRecords.size() > 0){
+				lowestEggDate = monthlyRecords.get(0).get(5).toString().split(" ")[0];
+			}
 
-			for(Object[] r : records){
-				int eggs = Integer.parseInt(r[1].toString());
-				totalEggs+=eggs;
-				totalFeeds+=Double.parseDouble(r[2].toString());
-				totalDeaths+=Integer.parseInt(r[3].toString());
-
-				if(eggs>highestEgg){ highestEgg=eggs; highestEggDate=r[0].toString();}
-				if(eggs<lowestEgg){ lowestEgg=eggs; lowestEggDate=r[0].toString();}
+			for(ArrayList<Object> r : monthlyRecords){
+				if(r.size() > 3){
+					int eggs = Integer.parseInt(r.get(1).toString());
+					totalEggs+=eggs;
+					totalFeeds+=Double.parseDouble(r.get(2).toString());
+					totalDeaths+=Integer.parseInt(r.get(3).toString());
+					
+					String currentDate = r.get(5).toString().split(" ")[0];
+					
+					if(eggs>highestEgg){ 
+						highestEgg=eggs; 
+						highestEggDate=currentDate;
+					}
+					if(eggs<lowestEgg){ 
+						lowestEgg=eggs; 
+						lowestEggDate=currentDate;
+					}
+				}
 			}
 
 			System.out.println("--- Monthly Report ("+time.getMonth()+" "+time.getYear()+") ---");
@@ -167,21 +204,27 @@ public class Report{
 		}
 	}
 	public static void reportSummary(Runnable homeCallBack){
-		ArrayList<Object[]> records = tools.readTable("FarmRecord");
+		ArrayList<ArrayList<Object>> records = tools.readTable("farm_records");
 
 		int todayEgg=0,thisWeekEgg=0,thisMonthEgg=0;
 
-		for(Object[] r : records){
-			if(r[0].toString().equals(time.toLocalDate().toString())) todayEgg=Integer.parseInt(r[1].toString());
-
-			for(int i=0;i<7;i++){
-				if(r[0].toString().equals(time.toLocalDate().minusDays(i).toString())){
-					thisWeekEgg+=Integer.parseInt(r[1].toString());
+		for(ArrayList<Object> r : records){
+			if(r.size() > 5){
+				String recordDate = r.get(5).toString().split(" ")[0];
+				
+				if(recordDate.equals(time.toLocalDate().toString())) {
+					todayEgg = Integer.parseInt(r.get(1).toString());
 				}
-			}
 
-			if(tools.monthsOfTheYear(r[0].toString()).equals(time.getMonth().toString())){
-				thisMonthEgg+=Integer.parseInt(r[1].toString());
+				for(int i=0;i<7;i++){
+					if(recordDate.equals(time.toLocalDate().minusDays(i).toString())){
+						thisWeekEgg+=Integer.parseInt(r.get(1).toString());
+					}
+				}
+
+				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
+					thisMonthEgg+=Integer.parseInt(r.get(1).toString());
+				}
 			}
 		}
 
@@ -203,23 +246,43 @@ public class Report{
 		}
 	}
 	public static void statsSummary(Runnable homeCallBack){
-		ArrayList<Object[]> records = new ArrayList<>();
-		for(Object[] r : tools.readTable("FarmRecord")){
-			if(tools.monthsOfTheYear(r[0].toString()).equals(time.getMonth().toString())){
-				records.add(r);
+		ArrayList<ArrayList<Object>> allRecords = tools.readTable("farm_records");
+		ArrayList<ArrayList<Object>> monthlyRecords = new ArrayList<>();
+		
+		for(ArrayList<Object> r : allRecords){
+			if(r.size() > 5){
+				String recordDate = r.get(5).toString().split(" ")[0];
+				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
+					monthlyRecords.add(r);
+				}
 			}
 		}
 
-		if(records.isEmpty()){
+		if(monthlyRecords.isEmpty()){
 			System.out.println("No record found.");
 		} else {
-			int highestEgg=0,lowestEgg=Integer.parseInt(records.get(0)[1].toString());
-			String highestEggDate="",lowestEggDate=records.get(0)[0].toString();
+			int highestEgg=0;
+			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(1).toString()) : 0;
+			String highestEggDate="",lowestEggDate="";
+			
+			if(monthlyRecords.size() > 0){
+				lowestEggDate = monthlyRecords.get(0).get(5).toString().split(" ")[0];
+			}
 
-			for(Object[] r : records){
-				int eggs = Integer.parseInt(r[1].toString());
-				if(eggs>highestEgg){ highestEgg=eggs; highestEggDate=r[0].toString();}
-				if(eggs<lowestEgg){ lowestEgg=eggs; lowestEggDate=r[0].toString();}
+			for(ArrayList<Object> r : monthlyRecords){
+				if(r.size() > 1){
+					int eggs = Integer.parseInt(r.get(1).toString());
+					String currentDate = r.get(5).toString().split(" ")[0];
+					
+					if(eggs>highestEgg){ 
+						highestEgg=eggs; 
+						highestEggDate=currentDate;
+					}
+					if(eggs<lowestEgg){ 
+						lowestEgg=eggs; 
+						lowestEggDate=currentDate;
+					}
+				}
 			}
 
 			System.out.println("--- Statistics Summary ---");

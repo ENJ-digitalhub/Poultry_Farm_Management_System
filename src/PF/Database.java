@@ -12,35 +12,72 @@ public class Database {
 	private static boolean isInitialized = false;
 	public static Connection connect() {
 		Connection conn = null;
-		try {
-			// Load the SQLite JDBC driver
-			Class.forName("org.sqlite.JDBC");
-			
-			// Database path - this creates the database in a data folder
-			String url = "jdbc:sqlite:data/poultry.db";
-			
-			// Make sure the data folder exists
-			File dataDir = new File("data");
-			if (!dataDir.exists()) {
-				dataDir.mkdirs();
-				System.out.println("Created data folder for database storage");
+		int maxRetries = 5;
+		int retryDelay = 1000; // 1 second
+		
+		for (int attempt = 1; attempt <= maxRetries; attempt++) {
+			try {
+				// Load the SQLite JDBC driver
+				Class.forName("org.sqlite.JDBC");
+				
+				// Database path - this creates the database in a data folder
+				String url = "jdbc:sqlite:data/poultry.db";
+				
+				// Make sure the data folder exists
+				File dataDir = new File("data");
+				if (!dataDir.exists()) {
+					dataDir.mkdirs();
+					System.out.println("Created data folder for database storage");
+				}
+				
+				// Add connection parameters to handle OneDrive/locking issues
+				url += "?journal_mode=WAL&synchronous=NORMAL&locking_mode=NORMAL&busy_timeout=5000";
+				
+				// Connect to the database
+				conn = DriverManager.getConnection(url);
+				
+				// Set pragmas for better handling
+				try (Statement stmt = conn.createStatement()) {
+					stmt.execute("PRAGMA journal_mode=WAL");
+					stmt.execute("PRAGMA synchronous=NORMAL");
+					stmt.execute("PRAGMA locking_mode=NORMAL");
+					stmt.execute("PRAGMA busy_timeout=5000");
+				}
+				
+				// If this is the first connection, check if tables exist
+				if (!isInitialized) {
+					checkIfTablesExist(conn);
+				}
+				
+				System.out.println("Connected to database successfully (attempt " + attempt + ")");
+				return conn;
+				
+			} catch (ClassNotFoundException e) {
+				System.err.println("SQLite JDBC driver not found!");
+				e.printStackTrace();
+				break;
+			} catch (SQLException e) {
+				System.err.println("Connection attempt " + attempt + " failed: " + e.getMessage());
+				
+				// Close connection if it was partially created
+				if (conn != null) {
+					try { conn.close(); } catch (SQLException e2) { /* ignore */ }
+				}
+				
+				if (attempt < maxRetries) {
+					System.out.println("Retrying in " + (retryDelay/1000) + " seconds...");
+					try {
+						Thread.sleep(retryDelay);
+						retryDelay *= 2; // Exponential backoff
+					} catch (InterruptedException ie) {
+						Thread.currentThread().interrupt();
+						break;
+					}
+				} else {
+					System.err.println("Failed to connect after " + maxRetries + " attempts");
+					e.printStackTrace();
+				}
 			}
-			
-			// Connect to the database
-			conn = DriverManager.getConnection(url);
-			
-			// If this is the first connection, check if tables exist
-			if (!isInitialized) {
-				checkIfTablesExist(conn);
-			}
-			
-			System.out.println("Connected to database successfully");
-		} catch (ClassNotFoundException e) {
-			System.err.println("SQLite JDBC driver not found!");
-			e.printStackTrace();
-		} catch (SQLException e) {
-			System.err.println("Connection to database failed!");
-			e.printStackTrace();
 		}
 		return conn;
 	}
@@ -94,7 +131,6 @@ public class Database {
 		try (Statement stmt = conn.createStatement()) {
 			
 			// Create users table if it doesn't exist
-			// Stores user information like name, username, and PIN
 			String usersTable = """
 				CREATE TABLE IF NOT EXISTS users (
 					user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,30 +143,29 @@ public class Database {
 			""";
 			stmt.execute(usersTable);
 			
-			// Create farm_records table if it doesn't exist
-			// Stores daily farm activity records
+			// Create farm_records table with TEXT created_by
 			String farmRecordsTable = """
 				CREATE TABLE IF NOT EXISTS farm_records (
 					record_id INTEGER PRIMARY KEY AUTOINCREMENT,
-					record_date TEXT NOT NULL,         -- just the date, matches your data array
+					record_date TEXT NOT NULL,
 					eggs_collected INTEGER NOT NULL,
 					feeds_used REAL NOT NULL,
 					death INTEGER NOT NULL,
 					comment TEXT,
-					created_at TEXT DEFAULT CURRENT_TIMESTAMP -- full date-time automatically
+					created_by TEXT NOT NULL,
+					created_at TEXT DEFAULT CURRENT_TIMESTAMP
 				);
-
 			""";
 			stmt.execute(farmRecordsTable);
 			
-			// Create inventory table if it doesn't exist
-			// Tracks current inventory of birds, eggs, and feeds
+			// Create inventory table with TEXT created_by
 			String inventoryTable = """
 				CREATE TABLE IF NOT EXISTS inventory (
 					inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
 					bird_no INTEGER NOT NULL,
 					eggs_no INTEGER NOT NULL,
 					feeds_no INTEGER NOT NULL,
+					created_by TEXT NOT NULL, 
 					created_at TEXT DEFAULT CURRENT_TIMESTAMP
 				);
 			""";

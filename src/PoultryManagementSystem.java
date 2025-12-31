@@ -84,6 +84,14 @@ public class PoultryManagementSystem{
 		}
 		if (option==0){
 			tools.clearScreen();
+			System.out.println("Good-Bye "+
+			User.userFirstName + 
+			" " + 
+			User.userLastName + 
+			"!"+
+			"Press ENTER to continue...");
+			read.nextLine();
+			tools.clearScreen();
 			startupPage();
 		}
 		else{
@@ -119,6 +127,6 @@ public class PoultryManagementSystem{
 	}
 	public static void main(String[] args){
 		PoultryManagementSystem PSM = new PoultryManagementSystem();
-		startupPage();
+		PSM.startupPage();
 	}
 }

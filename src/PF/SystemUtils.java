@@ -131,28 +131,181 @@ public class SystemUtils {
 		} catch (SQLException e) { e.printStackTrace(); }
 		return records;
 	}
-	/** Adds a record to a table */
+	/** Adds a record to a table
+	Adds a record to a table - automatically adds created_by with current username */
 	public static void addRecord(String tableName, Object[] values) {
-		try (Connection conn = Database.connect()) {
-			String placeholders = String.join(",", Collections.nCopies(values.length, "?"));
-			String sql = "INSERT INTO " + tableName + " VALUES (NULL," + placeholders + ")"; // NULL for autoincrement ID
-			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = Database.connect();
+			if (conn == null) {
+				System.err.println("Cannot connect to database to add record");
+				return;
+			}
+			
+			// Get current username (you need to implement this in User class)
+			String currentUsername = User.userUserName;
+			
+			// Handle different table schemas
+			if (tableName.equalsIgnoreCase("inventory")) {
+				// Inventory table has: inventory_id, bird_no, eggs_no, feeds_no, created_by, created_at
+				// We need to provide: bird_no, eggs_no, feeds_no, created_by
+				String sql = "INSERT INTO inventory (bird_no, eggs_no, feeds_no, created_by) VALUES (?, ?, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				// Check how many values were provided
+				if (values.length == 3) {
+					// User provided: bird_no, eggs_no, feeds_no
+					pstmt.setObject(1, values[0]);
+					pstmt.setObject(2, values[1]);
+					pstmt.setObject(3, values[2]);
+					pstmt.setString(4, currentUsername);
+				} else if (values.length == 4) {
+					// User already included created_by
+					for (int i = 0; i < 4; i++) pstmt.setObject(i + 1, values[i]);
+				} else {
+					System.err.println("Wrong number of values for inventory table. Expected 3 or 4, got " + values.length);
+					return;
+				}
+				
+				pstmt.executeUpdate();
+				
+			} else if (tableName.equalsIgnoreCase("farm_records")) {
+				// Farm_records has: record_id, record_date, eggs_collected, feeds_used, death, comment, created_by, created_at
+				// We need to provide: record_date, eggs_collected, feeds_used, death, comment, created_by
+				String sql = "INSERT INTO farm_records (record_date, eggs_collected, feeds_used, death, comment, created_by) VALUES (?, ?, ?, ?, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				if (values.length == 5) {
+					// User provided: record_date, eggs_collected, feeds_used, death, comment
+					pstmt.setObject(1, values[0]);
+					pstmt.setObject(2, values[1]);
+					pstmt.setObject(3, values[2]);
+					pstmt.setObject(4, values[3]);
+					pstmt.setObject(5, values[4]);
+					pstmt.setString(6, currentUsername);
+				} else if (values.length == 6) {
+					// User already included created_by
+					for (int i = 0; i < 6; i++) pstmt.setObject(i + 1, values[i]);
+				} else {
+					System.err.println("Wrong number of values for farm_records table. Expected 5 or 6, got " + values.length);
+					return;
+				}
+				
+				pstmt.executeUpdate();
+				System.out.println("Farm record added by: " + currentUsername);
+				
+			} else {
+				// For other tables: use original logic
+				String placeholders = String.join(",", Collections.nCopies(values.length, "?"));
+				String sql = "INSERT INTO " + tableName + " VALUES (NULL," + placeholders + ")";
+				pstmt = conn.prepareStatement(sql);
 				for (int i = 0; i < values.length; i++) pstmt.setObject(i + 1, values[i]);
 				pstmt.executeUpdate();
+				System.out.println("Record added to " + tableName);
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+			
+		} catch (SQLException e) { 
+			System.err.println("Error adding record to " + tableName + ": " + e.getMessage());
+			e.printStackTrace(); 
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				System.err.println("Error closing statement: " + e.getMessage());
+			}
+			try {
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				System.err.println("Error closing connection: " + e.getMessage());
+			}
+		}
 	}
-	/** Updates record(s) in table */
+	/** Updates record(s) in table - automatically updates created_by with current username */
 	public static void updateRecord(String tableName, String[] columnNames, Object[] values, String condition) {
-		if (columnNames.length != values.length) { System.out.println("Column names and values mismatch!"); return; }
-		StringBuilder sql = new StringBuilder("UPDATE " + tableName + " SET ");
-		for (int i = 0; i < columnNames.length; i++) { sql.append(columnNames[i]).append("=?"); if (i < columnNames.length - 1) sql.append(", "); }
-		sql.append(" WHERE ").append(condition);
-		try (Connection conn = Database.connect();
-			 PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
-			for (int i = 0; i < values.length; i++) pstmt.setObject(i + 1, values[i]);
-			pstmt.executeUpdate();
-		} catch (SQLException e) { e.printStackTrace(); }
+		if (columnNames.length != values.length) { 
+			System.out.println("Column names and values mismatch!"); 
+			return; 
+		}
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = Database.connect();
+			if (conn == null) {
+				System.err.println("Cannot connect to database to update record");
+				return;
+			}
+			
+			// Get current username
+			String currentUsername = User.userUserName;
+			
+			// Check if this table has created_by column and if we need to update it
+			boolean hasCreatedBy = tableName.equalsIgnoreCase("inventory") || 
+								  tableName.equalsIgnoreCase("farm_records");
+			boolean userProvidedCreatedBy = false;
+			
+			// Check if user already provided created_by in columnNames
+			for (String col : columnNames) {
+				if (col.equalsIgnoreCase("created_by")) {
+					userProvidedCreatedBy = true;
+					break;
+				}
+			}
+			
+			StringBuilder sql = new StringBuilder("UPDATE " + tableName + " SET ");
+			
+			// Add user-specified columns
+			for (int i = 0; i < columnNames.length; i++) { 
+				sql.append(columnNames[i]).append("=?"); 
+				if (i < columnNames.length - 1) sql.append(", "); 
+			}
+			
+			// Add created_by if needed (for inventory and farm_records tables)
+			if (hasCreatedBy && !userProvidedCreatedBy) {
+				if (columnNames.length > 0) sql.append(", ");
+				sql.append("created_by=?");
+			}
+			
+			sql.append(" WHERE ").append(condition);
+			
+			System.out.println("Executing: " + sql.toString());
+			
+			pstmt = conn.prepareStatement(sql.toString());
+			
+			// Set user-specified values
+			for (int i = 0; i < values.length; i++) {
+				pstmt.setObject(i + 1, values[i]);
+			}
+			
+			// Add created_by value if needed
+			if (hasCreatedBy && !userProvidedCreatedBy) {
+				pstmt.setString(values.length + 1, currentUsername);
+			}
+			
+			int rowsUpdated = pstmt.executeUpdate();
+			System.out.println("✓ " + rowsUpdated + " record(s) updated in " + tableName);
+			if (hasCreatedBy && !userProvidedCreatedBy) {
+				System.out.println("✓ Updated by: " + currentUsername);
+			}
+			
+		} catch (SQLException e) { 
+			System.err.println("Error updating record in " + tableName + ": " + e.getMessage());
+			e.printStackTrace(); 
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				System.err.println("Error closing statement: " + e.getMessage());
+			}
+			try {
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				System.err.println("Error closing connection: " + e.getMessage());
+			}
+		}
 	}
 	/** Checks if a record exists in a table */
 	public static boolean recordExists(String tableName, String columnName, Object value) {

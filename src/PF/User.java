@@ -17,6 +17,9 @@ public class User{
 	static String lastName;
 	static String userName;
 	static String pin;
+	public static String userFirstName;
+	public static String userLastName;
+	public static String userUserName;
 	static String [] info = new String [4];
 	static ArrayList <String> usersRecords = new ArrayList<String>();
 	
@@ -45,6 +48,7 @@ public class User{
 			System.out.print("User Name:");
 			userName=read.nextLine();
 			isConfirm=tools.confirm(userName);
+			userName=userName.toLowerCase();
 		}
 		
 		// Get PIN with confirmation
@@ -133,6 +137,7 @@ public class User{
 			System.out.print("Username:  ");
 			userName = read.nextLine();
 			isConfirm=tools.confirm(userName);
+			userName=userName.toLowerCase();
 		}
 		
 		// Get PIN with confirmation
@@ -174,8 +179,9 @@ public class User{
 			// Check if we found a matching user
 			if (rs.next()) {
 				// Login successful - get user's first name for welcome message
-				String userFirstName = rs.getString("firstname");
-				String userLastName = rs.getString("lastname");
+				userFirstName = rs.getString("firstname");
+				userLastName = rs.getString("lastname");
+				userUserName= rs.getString("username");
 				
 				System.out.println("Login successful!");
 				System.out.println("Welcome back " + userFirstName + " " + userLastName + "!");
@@ -192,7 +198,7 @@ public class User{
 				read.nextLine();
 				
 				tools.clearScreen();
-				register(startupPageCallBack, homecallback);
+				startupPageCallBack.run();
 			}
 
 		} catch (SQLException e) {
