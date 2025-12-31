@@ -1,6 +1,3 @@
-I'll create a comprehensive, universal README.md file for your Poultry Management System that covers everything from installation to usage.
-
-```markdown
 # 🐓 Poultry Farm Management System (PFMS)
 
 ![Java](https://img.shields.io/badge/Java-8%2B-blue)
