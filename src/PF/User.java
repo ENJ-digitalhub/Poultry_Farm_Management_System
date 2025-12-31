@@ -1,5 +1,5 @@
 package PF;
-import PF.SystemUtils;
+import PF.*;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class User{
 		// Get first name with confirmation
 		while (isConfirm==false){
 			System.out.print("First Name:");
-			firstName=read.nextLine();
+			firstName=read.nextLine().trim();
 			isConfirm=tools.confirm(firstName); 
 		}
 		
@@ -38,7 +38,7 @@ public class User{
 		isConfirm=false;
 		while (isConfirm==false){
 			System.out.print("Last Name:");
-			lastName=read.nextLine();
+			lastName=read.nextLine().trim();
 			isConfirm=tools.confirm(lastName);
 		}
 		
@@ -46,7 +46,7 @@ public class User{
 		isConfirm=false;
 		while(isConfirm==false){
 			System.out.print("User Name:");
-			userName=read.nextLine();
+			userName=read.nextLine().trim();
 			isConfirm=tools.confirm(userName);
 			userName=userName.toLowerCase();
 		}
@@ -55,7 +55,7 @@ public class User{
 		isConfirm=false;
 		while (isConfirm==false){
 			System.out.print("Pin (4 digits):");
-			pin=read.nextLine();
+			pin=read.nextLine().trim();
 			isConfirm=tools.confirm(pin);
 		}
 		isConfirm=false;
@@ -70,7 +70,7 @@ public class User{
 		if (conn == null) {
 			System.out.println("Cannot connect to database. Registration failed.");
 			System.out.println("Press ENTER to try again...");
-			read.nextLine();
+			read.nextLine().trim();
 			tools.clearScreen();
 			startupPageCallBack.run();
 			return;
@@ -92,7 +92,7 @@ public class User{
 			System.out.println("User registered successfully!");
 			System.out.println("Welcome " + firstName + " " + lastName + "!");
 			System.out.println("Press ENTER to login with your new account...");
-			read.nextLine();
+			read.nextLine().trim();
 			
 			tools.clearScreen();
 			
@@ -113,7 +113,7 @@ public class User{
 			}
 			
 			System.out.println("Press ENTER to try again...");
-			read.nextLine();
+			read.nextLine().trim();
 			tools.clearScreen();
 			startupPageCallBack.run();
 			
@@ -135,7 +135,7 @@ public class User{
 		// Get username with confirmation
 		while(isConfirm==false){
 			System.out.print("Username:  ");
-			userName = read.nextLine();
+			userName = read.nextLine().trim();
 			isConfirm=tools.confirm(userName);
 			userName=userName.toLowerCase();
 		}
@@ -144,7 +144,7 @@ public class User{
 		isConfirm=false;
 		while(isConfirm==false){
 			System.out.print("Pin:  ");
-			pin = read.nextLine();
+			pin = read.nextLine().trim();
 			isConfirm=tools.confirm(pin);
 		}
 		
@@ -158,7 +158,7 @@ public class User{
 		if (conn == null) {
 			System.out.println("Cannot connect to database. Login failed.");
 			System.out.println("Press ENTER to try again...");
-			read.nextLine();
+			read.nextLine().trim();
 			tools.clearScreen();
 			startupPageCallBack.run();
 			return;
@@ -186,7 +186,7 @@ public class User{
 				System.out.println("Login successful!");
 				System.out.println("Welcome back " + userFirstName + " " + userLastName + "!");
 				System.out.println("Press ENTER to continue...");
-				read.nextLine();
+				read.nextLine().trim();
 				
 				tools.clearScreen();
 				homecallback.run(); // Go to main application
@@ -195,7 +195,7 @@ public class User{
 				// Login failed - wrong username or PIN
 				System.out.println("Login failed! Username or PIN incorrect.");
 				System.out.println("Press ENTER to try registration instead...");
-				read.nextLine();
+				read.nextLine().trim();
 				
 				tools.clearScreen();
 				startupPageCallBack.run();
@@ -212,7 +212,7 @@ public class User{
 			}
 			
 			System.out.println("Press ENTER to try registration...");
-			read.nextLine();
+			read.nextLine().trim();
 			
 			tools.clearScreen();
 			startupPageCallBack.run();

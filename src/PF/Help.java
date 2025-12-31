@@ -46,7 +46,7 @@ public class Help {
 						"   - Solution: Restart the program and try again.\n\n" +
 						"Press ENTER to return to Help Menu..."
 					);
-					read.nextLine();
+					read.nextLine().trim();
 					break;
 				case 2:
 					System.out.println(
@@ -57,7 +57,7 @@ public class Help {
 						"- Navigate menus using numeric options only.\n\n" +
 						"Press ENTER to return to Help Menu..."
 					);
-					read.nextLine();
+					read.nextLine().trim();
 					break;
 				case 3:
 					System.out.println(
@@ -68,7 +68,7 @@ public class Help {
 						"- Advanced reporting and analytics coming in future updates.\n\n" +
 						"Press ENTER to return to Help Menu..."
 					);
-					read.nextLine();
+					read.nextLine().trim();
 					break;
 				case 4:
 					System.out.println(
@@ -81,11 +81,11 @@ public class Help {
 						"Your feedback is welcome. Thank you for using the system.\n\n" +
 						"Press ENTER to return to Help Menu..."
 					);
-					read.nextLine();
+					read.nextLine().trim();
 					break;
 				default:
 					System.out.println("Invalid option. Please select a number from the menu.");
-					read.nextLine();
+					read.nextLine().trim();
 					break;
 			}
 		}

@@ -24,11 +24,11 @@ public class PoultryManagementSystem{
 		while(true){
 			try{
 				option = read.nextInt();
-				read.nextLine();
+				read.nextLine().trim();
 				break;
 			}catch(Exception e){
 				System.out.println("\nInvalid input! Please enter numbers only.");
-				read.nextLine();
+				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
 		}
@@ -74,11 +74,11 @@ public class PoultryManagementSystem{
 		while(true){
 			try{
 				option = read.nextInt();
-				read.nextLine();
+				read.nextLine().trim();
 				break;
 			}catch(Exception e){
 				System.out.println("\nInvalid input! Please enter numbers only.");
-				read.nextLine();
+				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
 		}
@@ -90,7 +90,7 @@ public class PoultryManagementSystem{
 			User.userLastName + 
 			"!"+
 			"Press ENTER to continue...");
-			read.nextLine();
+			read.nextLine().trim();
 			tools.clearScreen();
 			startupPage();
 		}

@@ -20,11 +20,11 @@ public class Report{
 		while(true){
 			try{
 				option=read.nextInt();
-				read.nextLine();
+				read.nextLine().trim();
 				break;
 			}catch(Exception e){
 				System.out.println("Invalid input. Enter a number.");
-				read.nextLine();
+				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
 		}

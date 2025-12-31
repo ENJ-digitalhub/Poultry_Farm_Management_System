@@ -101,8 +101,8 @@ public class SystemUtils {
 		double value = -1;
 		do {
 			System.out.print(prompt);
-			try { value = read.nextDouble(); read.nextLine(); } 
-			catch (Exception e) { System.out.println("Invalid input."); read.nextLine(); value = -1; }
+			try { value = read.nextDouble(); read.nextLine().trim(); } 
+			catch (Exception e) { System.out.println("Invalid input."); read.nextLine().trim(); value = -1; }
 		} while (value < 0);
 		return value;
 	}
@@ -110,8 +110,8 @@ public class SystemUtils {
 		int value = -1;
 		do {
 			System.out.print(prompt);
-			try { value = read.nextInt(); read.nextLine(); } 
-			catch (Exception e) { System.out.println("Invalid input."); read.nextLine(); value = -1; }
+			try { value = read.nextInt(); read.nextLine().trim(); } 
+			catch (Exception e) { System.out.println("Invalid input."); read.nextLine().trim(); value = -1; }
 		} while (value < 0);
 		return value;
 	}
@@ -150,22 +150,23 @@ public class SystemUtils {
 			// Handle different table schemas
 			if (tableName.equalsIgnoreCase("inventory")) {
 				// Inventory table has: inventory_id, bird_no, eggs_no, feeds_no, created_by, created_at
-				// We need to provide: bird_no, eggs_no, feeds_no, created_by
-				String sql = "INSERT INTO inventory (bird_no, eggs_no, feeds_no, created_by) VALUES (?, ?, ?, ?)";
+				// We need to provide: bird_no, eggs_no, broken_eggs, feeds_no, created_by
+				String sql = "INSERT INTO inventory (bird_no, eggs_no, broken_eggs, feeds_no, created_by) VALUES (?, ?, ?, ?, ?)";
 				pstmt = conn.prepareStatement(sql);
 				
 				// Check how many values were provided
-				if (values.length == 3) {
-					// User provided: bird_no, eggs_no, feeds_no
+				if (values.length == 4) {
+					// User provided: bird_no, eggs_no, broken_eggs,feeds_no
 					pstmt.setObject(1, values[0]);
 					pstmt.setObject(2, values[1]);
 					pstmt.setObject(3, values[2]);
-					pstmt.setString(4, currentUsername);
-				} else if (values.length == 4) {
+					pstmt.setObject(4, values[3]);
+					pstmt.setString(5, currentUsername);
+				} else if (values.length == 5) {
 					// User already included created_by
-					for (int i = 0; i < 4; i++) pstmt.setObject(i + 1, values[i]);
+					for (int i = 0; i < 5; i++) pstmt.setObject(i + 1, values[i]);
 				} else {
-					System.err.println("Wrong number of values for inventory table. Expected 3 or 4, got " + values.length);
+					System.err.println("Wrong number of values for inventory table. Expected 4 or 5, got " + values.length);
 					return;
 				}
 				
@@ -174,11 +175,11 @@ public class SystemUtils {
 			} else if (tableName.equalsIgnoreCase("farm_records")) {
 				// Farm_records has: record_id, record_date, eggs_collected, feeds_used, death, comment, created_by, created_at
 				// We need to provide: record_date, eggs_collected, feeds_used, death, comment, created_by
-				String sql = "INSERT INTO farm_records (record_date, eggs_collected, feeds_used, death, comment, created_by) VALUES (?, ?, ?, ?, ?, ?)";
+				String sql = "INSERT INTO farm_records (eggs_collected, broken_eggs, feeds_used, death, comment, created_by) VALUES (?, ?, ?, ?, ?, ?)";
 				pstmt = conn.prepareStatement(sql);
 				
 				if (values.length == 5) {
-					// User provided: record_date, eggs_collected, feeds_used, death, comment
+					// User provided:eggs_collected, broken_eggs, feeds_used, death, comment
 					pstmt.setObject(1, values[0]);
 					pstmt.setObject(2, values[1]);
 					pstmt.setObject(3, values[2]);

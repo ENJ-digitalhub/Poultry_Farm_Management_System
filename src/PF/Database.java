@@ -13,9 +13,10 @@ public class Database {
 	public static Connection connect() {
 		Connection conn = null;
 		int maxRetries = 5;
+		int attempt = 0;
 		int retryDelay = 1000; // 1 second
 		
-		for (int attempt = 1; attempt <= maxRetries; attempt++) {
+		for (attempt = 1; attempt <= maxRetries; attempt++) {
 			try {
 				// Load the SQLite JDBC driver
 				Class.forName("org.sqlite.JDBC");
@@ -50,6 +51,7 @@ public class Database {
 				}
 				
 				System.out.println("Connected to database successfully (attempt " + attempt + ")");
+				attempt++;
 				return conn;
 				
 			} catch (ClassNotFoundException e) {
@@ -58,6 +60,7 @@ public class Database {
 				break;
 			} catch (SQLException e) {
 				System.err.println("Connection attempt " + attempt + " failed: " + e.getMessage());
+				attempt++;
 				
 				// Close connection if it was partially created
 				if (conn != null) {
@@ -75,6 +78,7 @@ public class Database {
 					}
 				} else {
 					System.err.println("Failed to connect after " + maxRetries + " attempts");
+					attempt++;
 					e.printStackTrace();
 				}
 			}
@@ -147,8 +151,9 @@ public class Database {
 			String farmRecordsTable = """
 				CREATE TABLE IF NOT EXISTS farm_records (
 					record_id INTEGER PRIMARY KEY AUTOINCREMENT,
-					record_date TEXT NOT NULL,
+					record_date TEXT NOT NULL DEFAULT CURRENT_DATE ,
 					eggs_collected INTEGER NOT NULL,
+					broken_eggs INTEGER NOT NULL,
 					feeds_used REAL NOT NULL,
 					death INTEGER NOT NULL,
 					comment TEXT,
@@ -164,6 +169,7 @@ public class Database {
 					inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
 					bird_no INTEGER NOT NULL,
 					eggs_no INTEGER NOT NULL,
+					broken_eggs INTEGER NOT NULL,
 					feeds_no INTEGER NOT NULL,
 					created_by TEXT NOT NULL, 
 					created_at TEXT DEFAULT CURRENT_TIMESTAMP

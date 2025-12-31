@@ -19,11 +19,11 @@ public class Inventory {
 		while (true) {
 			try {
 				option = read.nextInt();
-				read.nextLine();
+				read.nextLine().trim();
 				break;
 			} catch (Exception e) {
 				System.out.println("Invalid input");
-				read.nextLine();
+				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
 		}
@@ -70,7 +70,7 @@ public class Inventory {
 			double currentFeed = Double.parseDouble(latest[4].toString());
 			
 			int newBirdCount = currentBirds + birdNo;
-			Object[] values = {newBirdCount, currentEggs,broken_eggs, currentFeed};
+			Object[] values = {newBirdCount, currentEggs,currentBrokenEggs, currentFeed};
 			String[] columns = {"bird_no", "eggs_no","broken_eggs", "feeds_no"};
 			
 			tools.addRecord("inventory", values);
@@ -78,11 +78,12 @@ public class Inventory {
 		}
 		
 		System.out.println("Press ENTER to return...");
-		read.nextLine();
+		read.nextLine().trim();
 		tools.clearScreen();
 		stockMenu(homeCallBack);
 	} 
 	public static void removeBird(Runnable homeCallBack) {
+		int newBirdCount=0;
 		System.out.println("--- Remove Birds ---");
 		
 		int birdNo = tools.getPositiveIntInput("Input number of Bird to remove: ");
@@ -108,29 +109,30 @@ public class Inventory {
 			int currentBrokenEggs  = Integer.parseInt(latest[3].toString());
 			double currentFeed = Double.parseDouble(latest[4].toString());
 		
-		if (birdNo > currentBirds) {
-			System.out.println("Not enough birds to remove. Total: " + currentBirds);
-			System.out.println("Press ENTER to return...");
-			read.nextLine();
-			tools.clearScreen();
-			stockMenu(homeCallBack);
-			return;
-		}
+			if (birdNo > currentBirds) {
+				System.out.println("Not enough birds to remove. Total: " + currentBirds);
+				System.out.println("Press ENTER to return...");
+				read.nextLine().trim();
+				tools.clearScreen();
+				stockMenu(homeCallBack);
+				return;
+			}
 
-		// Update inventory
-		int newBirdCount = currentBirds - birdNo;
-		Object[] values = {newBirdCount, currentEggs,currentBrokenEggs, currentFeed};
-		String[] columns = {"bird_no", "eggs_no","broken_eggs", "feeds_no"};
-		
-		tools.addRecord("inventory", values);
-		
+			// Update inventory
+			newBirdCount = currentBirds - birdNo;
+			Object[] values = {newBirdCount, currentEggs,currentBrokenEggs, currentFeed};
+			String[] columns = {"record_date","bird_no", "eggs_no","broken_eggs", "feeds_no"};
+			
+			tools.addRecord("inventory", values);
+		}
 		System.out.println("\nRemoved " + birdNo + " birds. Remaining birds: " + newBirdCount);
 		System.out.println("Press ENTER to return...");
-		read.nextLine();
+		read.nextLine().trim();
 		tools.clearScreen();
 		stockMenu(homeCallBack);
 	}
-	public static void addFeed(Runnable homeCallBack) {
+	public static void addFeed (Runnable homeCallBack) {
+		double newFeedCount=0;
 		System.out.println("--- Add Feed ---");
 		
 		double feedNo = tools.getPositiveDoubleInput("Input amount of Feed to add: ");
@@ -157,16 +159,16 @@ public class Inventory {
 			int currentBrokenEggs  = Integer.parseInt(latest[3].toString());
 			double currentFeed = Double.parseDouble(latest[4].toString());
 		
-		// Update inventory
-		double newFeedCount = currentFeed + feedNo;
-		Object[] values = {currentBirds, currentEggs, currentBrokenEggs, newFeedCount};
-		String[] columns = {"bird_no", "eggs_no", "broken_eggs", "feeds_no"};
-		
-		tools.addRecord("inventory", values);
-		
+			// Update inventory
+			newFeedCount = currentFeed + feedNo;
+			Object[] values = {currentBirds, currentEggs, currentBrokenEggs, newFeedCount};
+			String[] columns = {"record_date","bird_no", "eggs_no", "broken_eggs", "feeds_no"};
+			
+			tools.addRecord("inventory", values);
+		}
 		System.out.println("\nAdded " + feedNo + "feed. Total feed: " + newFeedCount + "bags");
 		System.out.println("Press ENTER to return...");
-		read.nextLine();
+		read.nextLine().trim();
 		tools.clearScreen();
 		stockMenu(homeCallBack);
 	}
@@ -181,7 +183,7 @@ public class Inventory {
 			Object[] latest = inventory[inventory.length - 1];
 			int currentBirds = Integer.parseInt(latest[1].toString());
 			int currentEggs = Integer.parseInt(latest[2].toString());
-			double currentFeed = Double.parseDouble(latest[3].toString());
+			double currentFeed = Double.parseDouble(latest[4].toString());
 			
 			System.out.println("Current Birds\t: " + currentBirds);
 			System.out.println("Current Eggs\t: " + currentEggs);
@@ -196,11 +198,11 @@ public class Inventory {
 		while (true) {
 			try {
 				option = read.nextInt();
-				read.nextLine();
+				read.nextLine().trim();
 				break;
 			} catch (Exception e) {
 				System.out.println("Invalid input");
-				read.nextLine();
+				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
 		}
@@ -214,7 +216,7 @@ public class Inventory {
 		if (inventory.length == 0) {
 			System.out.println("No inventory records found");
 			System.out.println("Press ENTER to return...");
-			read.nextLine();
+			read.nextLine().trim();
 			tools.clearScreen();
 			stockMenu(homeCallBack);
 			return;
@@ -236,8 +238,8 @@ public class Inventory {
 			for (int i = startIdx; i < endIdx; i++) {
 				Object[] record = inventory[i];
 				String date = record[5].toString().split(" ")[0];
-				System.out.println(date + "\t|" + record[1] + "\t|" + 
-								  record[2] + "\t|" + record[3]);
+				System.out.println(date + "\t\t|" + record[1] + "\t|" + 
+								  record[2] + "\t|" + record[4]);
 			}
 
 			System.out.println("-".repeat(50));
@@ -246,17 +248,26 @@ public class Inventory {
 			System.out.print("Option: ");
 			String option = read.nextLine().trim().toUpperCase();
 
-			if (option.equals("N") && page < totalPages) {
+			if (option.equals("(?i)N") && page < totalPages) {
 				page++;
-			} else if (option.equals("P") && page > 1) {
+			} 
+			else if(option.equals("(?i)N") && !(page<totalPages)){
+				System.out.println("No next page - this is the last page.");
+				System.out.println("Press ENTER to continue...");
+				read.nextLine().trim();
+			} else if (option.equals("(?i)P") && page > 1) {
 				page--;
+			} else if (option.equals("(?i)P}") && !(page > 1)) {
+				System.out.println("No previous page - this is the first page.");
+				System.out.println("Press ENTER to continue...");
+				read.nextLine().trim();
 			} else if (option.equals("0")) { 
 				tools.clearScreen(); 
 				stockMenu(homeCallBack); 
 				return; 
 			} else { 
 				System.out.println("Invalid option. Press Enter to continue..."); 
-				read.nextLine(); 
+				read.nextLine().trim(); 
 			}
 		}
 	}
