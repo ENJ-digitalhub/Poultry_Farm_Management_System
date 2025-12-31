@@ -11,15 +11,16 @@ public class PoultryManagementSystem{
 	static SystemUtils tools = new SystemUtils();
 	static FarmRecord record = new FarmRecord();
 	static User user = new User();
+	static Inventory stock = new Inventory();
 	static Report report = new Report();
 	static Help help = new Help();
 	
 	public void startupPage(){
 		 // Load letters from file
-        tools.loadLetters("C:/Users/Noble Ekwere/OneDrive/Dokumente/NIIT/Poultry_Farm_Management_System/data/letters.txt");
+		tools.loadLetters("C:/Users/Noble Ekwere/OneDrive/Dokumente/NIIT/Poultry_Farm_Management_System/data/letters.txt");
 		System.out.println("\n"+"=".repeat(60)+"\n");
-        // Print a word horizontally
-        tools.printWordHorizontal("GRANTINO");
+		// Print a word horizontally
+		tools.printWordHorizontal("GRANTINO");
 		//System.out.println("\n");
 		System.out.println(tools.center("FARMS",60)+"\n");
 		System.out.println("=".repeat(60)+"\n");
@@ -27,10 +28,10 @@ public class PoultryManagementSystem{
 		read.nextLine();
 		tools.clearScreen();
 		
-		System.out.println("\n"+"=".repeat(50)+"\n");
+		System.out.println("\n"+"=".repeat(60)+"\n");
 		System.out.println(tools.center("Poultry Farm Management System",50)+"\n");
 		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),50));
-		System.out.println("\n"+"=".repeat(50)+"\n");
+		System.out.println("\n"+"=".repeat(60)+"\n");
 		System.out.print("1. Login\n2. Register\n0. Exit\nOption: ");
 		int option = -1;
 		while(true){
@@ -70,10 +71,11 @@ public class PoultryManagementSystem{
 		}
 	}
 	public void home(){
-		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.println(tools.center("MAIN MENU",50));
-		System.out.println("\n"+"=".repeat(50)+"\n");
-		/*report.eggGraph();*/
+		stock.checkLowStock();
+		System.out.println("\n"+"=".repeat(60)+"\n");
+		System.out.println(tools.center("POULTRY DASHBOARD", 50));
+		System.out.println(tools.center("HOME MENU",50));
+		System.out.println("\n"+"=".repeat(60)+"\n");
 		System.out.print(
 			"1. Farm Management\n"+
 			"2. Stock Management\n"+

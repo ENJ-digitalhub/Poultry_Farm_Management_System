@@ -1,8 +1,7 @@
 package PF;
 import PF.SystemUtils;
-import java.time.LocalDateTime;
-import java.util.Scanner;
-import java.util.ArrayList;
+import java.time.*;
+import java.util.*;
 
 public class Report{
 	static LocalDateTime time = LocalDateTime.now();
@@ -12,10 +11,10 @@ public class Report{
 	static ArrayList<String> farmRecords = new ArrayList<>();
 
 	public static void reportMenu(Runnable homeCallBack){
-		System.out.println("\n"+"=".repeat(50)+"\n");
+		System.out.println("\n"+"=".repeat(60)+"\n");
 		System.out.println(tools.center("REPORT MENU",50));
-		System.out.println("\n"+"=".repeat(50)+"\n");
-		System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n0. Back\nOption: ");
+		System.out.println("\n"+"=".repeat(60)+"\n");
+		System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n6.Egg Graph\n0. Back\nOption: ");
 		int option=-1;
 		while(true){
 			try{
@@ -53,6 +52,10 @@ public class Report{
 				case 5:
 					tools.clearScreen();
 					statsSummary(homeCallBack);
+					break;
+					case 6:
+					tools.clearScreen();
+					eggGraph(homeCallBack);
 					break;
 				default:
 					tools.clearScreen();
@@ -300,5 +303,87 @@ public class Report{
 			System.out.print("Invalid Input");
 			statsSummary(homeCallBack);
 		}
+	}
+	public static void eggGraph(Runnable homeCallBack) {
+		System.out.println("Egg Production Graph (Last 7 Days)");
+		System.out.println("\n" + "-".repeat(60));
+		
+		// Get today's date
+		LocalDate today = LocalDate.now();
+		
+		// Create a map to store eggs per day for last 7 days
+		Map<String, Integer> dailyEggs = new LinkedHashMap<>();
+		for (int i = 6; i >= 0; i--) {
+			LocalDate date = today.minusDays(i);
+			dailyEggs.put(date.toString(), 0);
+		}
+		
+		// Fetch all farm records from the database
+		Object[][] records = tools.getAllRecords("farm_records");
+		
+		if (records.length == 0) {
+			System.out.println("No records found.");
+			System.out.println("-".repeat(60));
+			return;
+		}
+		
+		// Calculate eggs for each of the last 7 days
+		for (Object[] record : records) {
+			// Assuming record structure: 
+			// [0]=record_id, [1]=record_date, [2]=eggs_collected, [3]=feeds_used, [4]=death, [5]=comment, [6]=created_by, [7]=created_at
+			
+			String recordDate;
+			if (record.length > 7 && record[7] != null) {
+				// Use created_at if available
+				recordDate = record[7].toString().split(" ")[0];
+			} else if (record.length > 1 && record[1] != null) {
+				// Use record_date
+				recordDate = record[1].toString();
+			} else {
+				continue;
+			}
+			
+			// Only process if date is within last 7 days
+			if (dailyEggs.containsKey(recordDate)) {
+				int eggs = 0;
+				if (record.length > 2 && record[2] != null) {
+					try {
+						eggs = Integer.parseInt(record[2].toString());
+					} catch (NumberFormatException e) {
+						eggs = 0;
+					}
+				}
+				// Add to existing count for that day
+				dailyEggs.put(recordDate, dailyEggs.get(recordDate) + eggs);
+			}
+		}
+		
+		// Find max eggs for scaling
+		int maxEggs = 0;
+		for (int eggs : dailyEggs.values()) {
+			if (eggs > maxEggs) maxEggs = eggs;
+		}
+		
+		// Print graph
+		System.out.println("Date\t\t| Eggs | Graph");
+		System.out.println("-".repeat(60));
+		
+		for (Map.Entry<String, Integer> entry : dailyEggs.entrySet()) {
+			String date = entry.getKey();
+			int eggs = entry.getValue();
+			
+			// Calculate bar length (scale to 50 characters max)
+			int barLength = maxEggs > 0 ? (int) ((double) eggs / maxEggs * 50) : 0;
+			
+			// Format: Date | Eggs | Bar Graph
+			System.out.printf("%-10s | %5d | %s%n", 
+				date, 
+				eggs,
+				"*".repeat(barLength));
+		}
+		
+		System.out.println("-".repeat(60));
+		System.out.println("Scale: 1 '*' = " + Math.max(1, maxEggs / 50) + " eggs");
+		System.out.println("\n" + "-".repeat(60) + "\n");
 	}
 }

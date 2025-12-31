@@ -195,7 +195,7 @@ public class SystemUtils {
 				}
 				
 				pstmt.executeUpdate();
-				System.out.println("Farm record added by: " + currentUsername);
+				System.out.println("Farm record added Succesfully. " );
 				
 			} else {
 				// For other tables: use original logic
@@ -289,7 +289,7 @@ public class SystemUtils {
 			int rowsUpdated = pstmt.executeUpdate();
 			System.out.println("✓ " + rowsUpdated + " record(s) updated in " + tableName);
 			if (hasCreatedBy && !userProvidedCreatedBy) {
-				System.out.println("✓ Updated by: " + currentUsername);
+				System.out.println("✓ Updated Succesfully");
 			}
 			
 		} catch (SQLException e) { 
@@ -357,86 +357,86 @@ public class SystemUtils {
 		return new ArrayList<>(records.subList(fromIndex, toIndex));
 	}
 	public static void printLetterFromIndexes(int[] filledIndexes) {
-        int rows = 6;
-        int cols = 5;
-        char[][] board = new char[rows][cols];
+		int rows = 6;
+		int cols = 5;
+		char[][] board = new char[rows][cols];
 
-        // Initialize all holes to empty
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                board[r][c] = ' ';
-            }
-        }
+		// Initialize all holes to empty
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++) {
+				board[r][c] = ' ';
+			}
+		}
 
-        // Fill the specified holes
-        for (int index : filledIndexes) {
-            if (index < 1 || index > rows * cols) continue; // ignore invalid indexes
-            int r = (index - 1) / cols;
-            int c = (index - 1) % cols;
-            board[r][c] = 'X';
-        }
+		// Fill the specified holes
+		for (int index : filledIndexes) {
+			if (index < 1 || index > rows * cols) continue; // ignore invalid indexes
+			int r = (index - 1) / cols;
+			int c = (index - 1) % cols;
+			board[r][c] = 'X';
+		}
 
-        // Print the board
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                System.out.print(board[r][c] + " ");
-            }
-            System.out.println();
-        }
-    }
-	    // Load letters from file
-    public static void loadLetters(String filename) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while((line = br.readLine()) != null) {
-                line = line.trim();
-                if(line.isEmpty()) continue;
-                String[] parts = line.split(":");
-                if(parts.length != 2) continue;
-                char letter = parts[0].charAt(0);
-                String[] nums = parts[1].split(",");
-                int[] indexes = new int[nums.length];
-                for(int i=0;i<nums.length;i++){
-                    indexes[i] = Integer.parseInt(nums[i].trim());
-                }
-                letterIndexes.put(letter, indexes);
-            }
-        } catch(IOException e){
-            System.out.println("Error reading letters file: " + e.getMessage());
-        }
-    }
-    public static char[][] buildLetterGrid(char letter) {
-        int rows = 6;
-        int cols = 5;
-        char[][] grid = new char[rows][cols];
-        for(int r=0;r<rows;r++){
-            Arrays.fill(grid[r],' ');
-        }
-        int[] indexes = letterIndexes.get(letter);
-        if(indexes != null){
-            for(int idx : indexes){
-                int r = (idx-1)/cols;
-                int c = (idx-1)%cols;
-                grid[r][c] = 'X';
-            }
-        }
-        return grid;
-    }
-    public static void printWordHorizontal(String word) {
-        int rows = 6;
-        int cols = 5;
-        char[][][] grids = new char[word.length()][][];
-        for(int i=0;i<word.length();i++){
-            grids[i] = buildLetterGrid(word.charAt(i));
-        }
-        for(int r=0;r<rows;r++){
-            for(int l=0;l<word.length();l++){
-                for(int c=0;c<cols;c++){
-                    System.out.print(grids[l][r][c]);
-                }
-                System.out.print("  "); // space between letters
-            }
-            System.out.println();
-        }
-    }
+		// Print the board
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++) {
+				System.out.print(board[r][c] + " ");
+			}
+			System.out.println();
+		}
+	}
+		// Load letters from file
+	public static void loadLetters(String filename) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				line = line.trim();
+				if(line.isEmpty()) continue;
+				String[] parts = line.split(":");
+				if(parts.length != 2) continue;
+				char letter = parts[0].charAt(0);
+				String[] nums = parts[1].split(",");
+				int[] indexes = new int[nums.length];
+				for(int i=0;i<nums.length;i++){
+					indexes[i] = Integer.parseInt(nums[i].trim());
+				}
+				letterIndexes.put(letter, indexes);
+			}
+		} catch(IOException e){
+			System.out.println("Error reading letters file: " + e.getMessage());
+		}
+	}
+	public static char[][] buildLetterGrid(char letter) {
+		int rows = 6;
+		int cols = 5;
+		char[][] grid = new char[rows][cols];
+		for(int r=0;r<rows;r++){
+			Arrays.fill(grid[r],' ');
+		}
+		int[] indexes = letterIndexes.get(letter);
+		if(indexes != null){
+			for(int idx : indexes){
+				int r = (idx-1)/cols;
+				int c = (idx-1)%cols;
+				grid[r][c] = 'X';
+			}
+		}
+		return grid;
+	}
+	public static void printWordHorizontal(String word) {
+		int rows = 6;
+		int cols = 5;
+		char[][][] grids = new char[word.length()][][];
+		for(int i=0;i<word.length();i++){
+			grids[i] = buildLetterGrid(word.charAt(i));
+		}
+		for(int r=0;r<rows;r++){
+			for(int l=0;l<word.length();l++){
+				for(int c=0;c<cols;c++){
+					System.out.print(grids[l][r][c]);
+				}
+				System.out.print("  "); // space between letters
+			}
+			System.out.println();
+		}
+	}
 }

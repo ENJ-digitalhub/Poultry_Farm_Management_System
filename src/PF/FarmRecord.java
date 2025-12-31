@@ -9,9 +9,9 @@ public class FarmRecord {
 	static LocalDateTime time = LocalDateTime.now();
 
 	public static void farmMenu(Runnable homeCallBack) {
-		System.out.println("\n" + "=".repeat(50) + "\n");
+		System.out.println("\n" + "=".repeat(60) + "\n");
 		System.out.println(tools.center("FARM MANAGEMENT MENU", 50));
-		System.out.println("\n" + "=".repeat(50) + "\n");
+		System.out.println("\n" + "=".repeat(60) + "\n");
 		System.out.print("1. Record Today's Farm Data\n2. View Farm Record History\n3. Update Existing Farm Record\n0. Back\nOption: ");
 
 		int option = -1;
@@ -64,7 +64,7 @@ public class FarmRecord {
 		
 		for (Object[] record : allRecords) {
 			// created_at is at index 5 (0=record_id, 1=eggs, 2=broken_eggs, 3=feed, 4=death, 5=comment, 6=created_at)
-			String recordDate = record[6].toString().split(" ")[0];
+			String recordDate = record[1].toString();
 			if (recordDate.equals(today)) {
 				recordExists = true;
 				break;
@@ -269,14 +269,19 @@ public class FarmRecord {
 		
 		// Get record ID to edit
 		System.out.println("\nRecent Records:");
-		System.out.println("ID\tDate\t\tEggs\tFeed\tDeaths");
-		System.out.println("-".repeat(50));
+		System.out.println("ID\tDate\t\tCrates(Eggs)\tBroken\tFeed\tDeaths");
+		System.out.println("-".repeat(60));
 		int showCount = Math.min(5, records.length);
 		for (int i = 0; i < showCount; i++) {
 			Object[] record = records[i];
-			String date = record[5].toString().split(" ")[0];
-			System.out.println(record[0] + "\t" + date + "\t" + 
-							   record[1] + "\t" + record[2] + "\t" + record[3]);
+			String date = record[1].toString();
+			System.out.println(record[0] + "\t" + record[1] + "\t" + 
+				   (Integer.parseInt(record[2].toString()) / 30) + "(" + 
+				   (Integer.parseInt(record[2].toString()) % 30) + ")\t\t" +
+				   record[3] + "\t" +
+				   record[4] + "\t" +
+				   record[5]);
+
 		}
 		
 		System.out.print("\nEnter Record ID to edit (or 0 to cancel): ");
@@ -316,45 +321,82 @@ public class FarmRecord {
 		}
 		
 		// Get previous values for inventory adjustment
-		int previousEggs = Integer.parseInt(recordToEdit[1].toString());
-		double previousFeed = Double.parseDouble(recordToEdit[2].toString());
-		int previousDeath = Integer.parseInt(recordToEdit[3].toString());
+		int previousEggs = Integer.parseInt(recordToEdit[2].toString());
+		int previousBrokenEggs = Integer.parseInt(recordToEdit[3].toString());
+		double previousFeed = Double.parseDouble(recordToEdit[4].toString());
+		int previousDeath = Integer.parseInt(recordToEdit[5].toString());
 		
 		// Get updated values - simpler approach
 		System.out.println("\nEnter new values:");
 		
-		// Eggs
-		int eggNo = -1;
-		while (eggNo < 0) {
-			eggNo = tools.getPositiveIntInput("Input number of Eggs collected: ");
+		// Eggs input - Your original crate format logic
+		isConfirm = false;
+		int eggNo = 0;
+		while (!isConfirm) {
+			System.out.print("Input number of Crate(s) [Eg. 5_3-> 5 crates,3 eggs]: ");
+			String eggInput = read.nextLine().trim();
+			try {
+				String[] parts = eggInput.split("_");
+				int crates = Integer.parseInt(parts[0]);
+				int pieces = Integer.parseInt(parts[1]);
+
+				if (crates < 0 || pieces < 0) System.out.println("Invalid Input. Positive values only");
+				else {
+					if (pieces >= 30) {
+						crates += pieces / 30;
+						pieces %= 30;
+					}
+					eggNo = crates * 30 + pieces;
+					isConfirm = tools.confirm(eggInput);
+				}
+			} catch (Exception e) {
+				System.out.println("Invalid format. Use crate_eggs format.");
+			}
+		}
+		// Broken Eggs
+		isConfirm = false;
+		int brokenEggNo = 0;
+		while (!isConfirm) {
+			brokenEggNo = tools.getPositiveIntInput("Input number of Cracks collected: ");
+			isConfirm = tools.confirm(brokenEggNo);
 		}
 		
 		// Feed
-		double feedNo = -1;
-		while (feedNo < 0) {
+		isConfirm = false;
+		double feedNo = 0;
+		while (!isConfirm) {
 			feedNo = tools.getPositiveDoubleInput("Input amount of Feed used: ");
+			isConfirm = tools.confirm(feedNo);
 		}
 		
 		// Deaths
-		int deathNo = -1;
-		while (deathNo < 0) {
+		isConfirm = false;
+		int deathNo = 0;
+		while (!isConfirm) {
 			deathNo = tools.getPositiveIntInput("Input number of Deaths: ");
+			isConfirm = tools.confirm(deathNo);
 		}
 		
 		// Comment
-		System.out.print("Comment: ");
-		String comment = read.nextLine().trim();
-		if (comment.isEmpty()) comment = "null";
+		isConfirm = false;
+		String comment = "";
+		while (!isConfirm){
+			System.out.print("Comment: ");
+			comment = read.nextLine().trim();
+			if (comment.isEmpty()) comment = "null";
+			isConfirm = tools.confirm(comment);
+		}
 		
 		// Update farm record
 		Object[] values = {eggNo, feedNo, deathNo, comment};
-		String[] columns = {"eggs_collected", "feeds_used", "death", "comment"};
+		String[] columns = {"eggs_collected","broken_eggs", "feeds_used", "death", "comment"};
 		String condition = "record_id = " + recordId;
 		
 		tools.updateRecord("farm_records", columns, values, condition);
 		
 		// Update inventory based on differences
 		int eggDiff = eggNo - previousEggs;
+		int brokenDiff = brokenEggNo - previousBrokenEggs;
 		double feedDiff = feedNo - previousFeed;
 		int deathDiff = deathNo - previousDeath;
 		
@@ -364,10 +406,11 @@ public class FarmRecord {
 			Object[] latestInventory = inventoryData[inventoryData.length - 1];
 			int currentBirds = Integer.parseInt(latestInventory[1].toString()) - deathDiff;
 			int currentEggs = Integer.parseInt(latestInventory[2].toString()) + eggDiff; // Add egg difference
+			int currentBrokenEggs = Integer.parseInt(latestInventory[3].toString()) + brokenDiff;
 			double currentFeed = Double.parseDouble(latestInventory[4].toString()) - feedDiff;
 			
-			Object[] inventoryValues = {currentBirds, currentEggs, currentFeed};
-			String[] inventoryColumns = {"bird_no", "eggs_no", "feeds_no"};
+			Object[] inventoryValues = {currentBirds, currentEggs,currentBrokenEggs, currentFeed};
+			String[] inventoryColumns = {"bird_no", "eggs_no","broken_eggs", "feeds_no"};
 			tools.updateRecord("inventory", inventoryColumns, inventoryValues, 
 							   "inventory_id = " + latestInventory[0]);
 		}

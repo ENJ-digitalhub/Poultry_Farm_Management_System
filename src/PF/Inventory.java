@@ -1,8 +1,7 @@
 package PF;
 
-import java.util.Scanner;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+import java.time.*;
 
 public class Inventory {
 	static Scanner read = new Scanner(System.in);
@@ -10,9 +9,9 @@ public class Inventory {
 	static LocalDateTime time = LocalDateTime.now();
 
 	public static void stockMenu(Runnable homeCallBack) {
-		System.out.println("\n" + "=".repeat(50) + "\n");
+		System.out.println("\n" + "=".repeat(60) + "\n");
 		System.out.println(tools.center("STOCK MANAGEMENT MENU", 50));
-		System.out.println("\n" + "=".repeat(50) + "\n");
+		System.out.println("\n" + "=".repeat(60) + "\n");
 		System.out.print("1. Add New Birds to Stock\n2. Remove Birds from Stock\n3. Record Feed Stock\n4. View Current Stock\n0. Back\nOption: ");
 
 		int option = -1;
@@ -166,7 +165,7 @@ public class Inventory {
 			
 			tools.addRecord("inventory", values);
 		}
-		System.out.println("\nAdded " + feedNo + "feed. Total feed: " + newFeedCount + "bags");
+		System.out.println("\nAdded " + feedNo + " bags. Total feed: " + newFeedCount + " bags");
 		System.out.println("Press ENTER to return...");
 		read.nextLine().trim();
 		tools.clearScreen();
@@ -230,7 +229,7 @@ public class Inventory {
 			tools.clearScreen();
 			System.out.println("--- Inventory History ---");
 			System.out.println("\nDate\t\t|Birds\t|Eggs\t|Feeds");
-			System.out.println("-".repeat(50));
+			System.out.println("-".repeat(60));
 
 			int startIdx = (page - 1) * pageSize;
 			int endIdx = Math.min(startIdx + pageSize, inventory.length);
@@ -242,7 +241,7 @@ public class Inventory {
 								  record[2] + "\t|" + record[4]);
 			}
 
-			System.out.println("-".repeat(50));
+			System.out.println("-".repeat(60));
 			System.out.println("\nPage " + page + " of " + totalPages + " (" + inventory.length + " records)");
 			System.out.println("N. Next Page | P. Previous Page | 0. Back");
 			System.out.print("Option: ");
@@ -270,5 +269,99 @@ public class Inventory {
 				read.nextLine().trim(); 
 			}
 		}
+	}
+	public static void checkLowStock() {
+		// Get current inventory from database
+		Object[][] inventory = tools.getAllRecords("inventory");
+		
+		if (inventory.length == 0) {
+			System.out.println("[Notification] No inventory data found.");
+			return;
+		}
+		
+		// Get latest inventory record
+		Object[] latest = inventory[inventory.length - 1];
+		
+		// Debug: Print what we're getting from the database
+		System.out.println("[Debug] Inventory record: " + Arrays.toString(latest));
+		
+		// Extract values based on your database structure
+		int currentBirdStock = 0;
+		int currentEggStock = 0;
+		double currentFeedStock = 0;
+		
+		// Based on your data, indices seem to be:
+		// [0]=inventory_id, [1]=bird_no, [2]=eggs_no, [3]=broken_eggs, [4]=feeds_no, [5]=created_by, [6]=created_at
+		if (latest.length > 1) {
+			try {
+				currentBirdStock = Integer.parseInt(latest[1].toString());
+			} catch (NumberFormatException e) {
+				System.out.println("[Error] Invalid bird stock value: " + latest[1]);
+			}
+		}
+		
+		if (latest.length > 2) {
+			try {
+				currentEggStock = Integer.parseInt(latest[2].toString());
+			} catch (NumberFormatException e) {
+				System.out.println("[Error] Invalid egg stock value: " + latest[2]);
+			}
+		}
+		
+		if (latest.length > 4) {
+			try {
+				currentFeedStock = Double.parseDouble(latest[4].toString());
+			} catch (NumberFormatException e) {
+				System.out.println("[Error] Invalid feed stock value: " + latest[4]);
+			}
+		}
+		
+		// Define thresholds
+		final int MIN_BIRD_STOCK = 100;	  // minimum birds
+		final int MIN_EGG_STOCK = 100;	   // minimum eggs
+		final double MIN_FEED_STOCK = 100.0; // minimum feed in units
+		
+		System.out.println("\n" + "-".repeat(60));
+		System.out.println("CURRENT STOCK STATUS");
+		System.out.println("-".repeat(60));
+		
+		boolean lowStockFound = false;
+		
+		// Check bird stock
+		System.out.printf("Birds: %d/%d ", currentBirdStock, MIN_BIRD_STOCK);
+		if (currentBirdStock < MIN_BIRD_STOCK) {
+			System.out.println("⚠️ LOW STOCK!");
+			lowStockFound = true;
+		} else {
+			System.out.println("✓ OK");
+		}
+		
+		// Check egg stock
+		System.out.printf("Eggs: %d/%d ", currentEggStock, MIN_EGG_STOCK);
+		if (currentEggStock < MIN_EGG_STOCK) {
+			System.out.println("⚠️ LOW STOCK!");
+			lowStockFound = true;
+		} else {
+			System.out.println("✓ OK");
+		}
+		
+		// Check feed stock
+		System.out.printf("Feed: %.1f/%.1f ", currentFeedStock, MIN_FEED_STOCK);
+		if (currentFeedStock < MIN_FEED_STOCK) {
+			System.out.println("⚠️ LOW STOCK!");
+			lowStockFound = true;
+		} else {
+			System.out.println("✓ OK");
+		}
+		
+		// Show summary
+		if (lowStockFound) {
+			System.out.println("\n⚠️ ACTION REQUIRED: Some stock levels are below minimum!");
+			System.out.println("   Please add stock in Inventory Management.");
+		} else {
+			System.out.println("\n✓ All stock levels are adequate.");
+		}
+		
+		System.out.println("-".repeat(60));
 	}
 }
