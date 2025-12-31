@@ -26,6 +26,48 @@ All through a **structured, menu-driven interface** suitable for non-technical u
 
 ---
 
+## 🖥️ System Requirements
+
+### Minimum Hardware Requirements
+- **Processor:** Intel / AMD Dual-Core or higher
+- **RAM:** 2 GB minimum (4 GB recommended)
+- **Storage:**
+  - At least **50 MB free disk space** (excluding data growth)
+  - Additional storage required as farm records increase
+
+### Software Requirements
+- **Operating System:**
+  - Windows 7 / 8 / 10 / 11
+  - Linux (Ubuntu, Debian, Fedora, etc.)
+  - macOS (Intel or Apple Silicon with Java support)
+
+- **Java Runtime Environment:**
+  - **Java Development Kit (JDK) 8 or higher**
+  - `JAVA_HOME` environment variable properly configured
+
+- **Database:**
+  - SQLite (accessed via JDBC driver — no separate installation required)
+
+- **Terminal / Command Line Interface:**
+  - Windows Command Prompt or PowerShell
+  - Linux / macOS Terminal
+
+### Development Requirements (Optional)
+For contributors or developers:
+- **IDE:** IntelliJ IDEA, Eclipse, NetBeans, or VS Code
+- **Build Tool:** Manual `javac` compilation  
+  *(Maven/Gradle planned for future releases)*
+
+### Required Permissions
+- Read and write access to:
+  - `data/` directory
+  - Project root folder
+
+> ⚠️ **Note:** This is a **CLI-based application** and does **not require internet access** once installed.
+
+
+---
+
 ## 🔬 System Architecture
 
 Modular Java architecture with separate components for farm data recording, inventory management, reporting, and utility functions.
