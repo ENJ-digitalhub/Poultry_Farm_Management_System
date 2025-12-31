@@ -15,6 +15,18 @@ public class PoultryManagementSystem{
 	static Help help = new Help();
 	
 	public void startupPage(){
+		 // Load letters from file
+        tools.loadLetters("C:/Users/Noble Ekwere/OneDrive/Dokumente/NIIT/Poultry_Farm_Management_System/data/letters.txt");
+		System.out.println("\n"+"=".repeat(60)+"\n");
+        // Print a word horizontally
+        tools.printWordHorizontal("GRANTINO");
+		//System.out.println("\n");
+		System.out.println(tools.center("FARMS",60)+"\n");
+		System.out.println("=".repeat(60)+"\n");
+		System.out.println("Press ENTER...");
+		read.nextLine();
+		tools.clearScreen();
+		
 		System.out.println("\n"+"=".repeat(50)+"\n");
 		System.out.println(tools.center("Poultry Farm Management System",50)+"\n");
 		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),50));
