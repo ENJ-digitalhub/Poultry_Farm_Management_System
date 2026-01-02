@@ -40,11 +40,14 @@
 ## 🚀 Quick Start
 
 ### **For Most Users (Run the JAR):**
+```bash
 # 1. Download and extract the project files
 # 2. Open Command Prompt / Terminal in the project root folder
 # 3. Run the application
 java -jar PM_System.jar
+```
 ### **For Developers (Compile from Source):**
+```bash
 # Compile the project (Windows)
 javac -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java
 
