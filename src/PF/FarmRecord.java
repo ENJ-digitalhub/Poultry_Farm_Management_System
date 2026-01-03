@@ -230,7 +230,7 @@ public class FarmRecord {
 				Object[] record = records[i];
 				// Indices: 0=record_id, 1=eggs_collected,2=broken_eggs, 3=feeds_used, 4=death, 5=comment, 6=created_at
 				String date = record[6].toString().split(" ")[0];
-				int totalEggs = Integer.parseInt(record[1].toString());
+				int totalEggs = Integer.parseInt(record[2].toString());
 				int crates = totalEggs / 30;
 				int pieces = totalEggs % 30;
 				
