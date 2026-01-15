@@ -5,7 +5,7 @@
 ![JAR](https://img.shields.io/badge/Packaged-JAR-green)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![License](https://img.shields.io/badge/License-Proprietary-red)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 📖 Table of Contents
 - [Overview](#-overview)
