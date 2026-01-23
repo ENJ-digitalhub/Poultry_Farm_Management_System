@@ -17,7 +17,7 @@ public class PoultryManagementSystem{
 	
 	public void startupPage(){
 		 // Load letters from file
-		tools.loadLetters("C:/Users/Noble Ekwere/OneDrive/Dokumente/NIIT/Poultry_Farm_Management_System/data/letters.txt");
+		tools.loadLetters("./data/letters.txt");
 		System.out.println("\n"+"=".repeat(60)+"\n");
 		// Print a word horizontally
 		tools.printWordHorizontal("GRANTINO");
