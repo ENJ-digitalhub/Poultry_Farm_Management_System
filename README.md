@@ -1,6 +1,3 @@
-I'll create a comprehensive, universal README.md file for your Poultry Management System that covers everything from installation to usage.
-
-```markdown
 # 🐓 Poultry Farm Management System (PFMS)
 
 ![Java](https://img.shields.io/badge/Java-8%2B-blue)
@@ -8,7 +5,7 @@ I'll create a comprehensive, universal README.md file for your Poultry Managemen
 ![JAR](https://img.shields.io/badge/Packaged-JAR-green)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![License](https://img.shields.io/badge/License-Proprietary-red)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 📖 Table of Contents
 - [Overview](#-overview)
@@ -45,26 +42,28 @@ I'll create a comprehensive, universal README.md file for your Poultry Managemen
 ### **For Most Users (Run the JAR):**
 ```bash
 # 1. Download and extract the project files
-# 2. Open Command Prompt/Terminal in the project folder
-# 3. Run this command:
+# 2. Open Command Prompt / Terminal in the project root folder
+# 3. Run the application
 java -jar PM_System.jar
 ```
-
 ### **For Developers (Compile from Source):**
 ```bash
-# Navigate to src directory
-cd src
+# Compile the project (Windows)
+javac -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java
 
-# Compile (Windows)
-javac -cp ".;../lib/sqlite-jdbc-3.45.2.0.jar" PF/*.java
+# Compile the project (macOS/Linux)
+javac -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java
 
-# Compile (macOS/Linux)
-javac -cp ".:../lib/sqlite-jdbc-3.45.2.0.jar" PF/*.java
+# Run the application (Windows)
+java -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" Main
+# OR (if Main is inside PF package)
+java -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" PF.Main
 
-# Run the application
-java -cp ".;../lib/sqlite-jdbc-3.45.2.0.jar" PF/PoultryManagementSystem
+# Run the application (macOS/Linux)
+java -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" Main
+# OR
+java -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" PF.Main
 ```
-
 ---
 
 ## 💻 System Requirements
@@ -328,7 +327,7 @@ cp data/poultry.db "Backup Location/poultry_backup_$(date +%Y%m%d).db"
 - Text file storage
 - User authentication
 
-### **⚡ Phase 1.5: Enhanced CLI (Version 1.5) - ✅ COMPLETE**
+### **⚡ Phase 1.5: Enhanced CLI (Version 1.5) - ✅ ONGOING**
 - **SQLite Database Migration** - Professional data storage
 - **Multi-User Authentication** - Team access with audit trails
 - **Enhanced Validation** - Real-time inventory checks
@@ -344,6 +343,7 @@ cp data/poultry.db "Backup Location/poultry_backup_$(date +%Y%m%d).db"
 - Enhanced search capabilities
 
 ### **📈 Phase 2.5: Analytics & Optimization - ⏳ PLANNED**
+- GUI Interface
 - Predictive analytics (trends, forecasts)
 - Automated alerts (low stock, anomalies)
 - Advanced data visualization
