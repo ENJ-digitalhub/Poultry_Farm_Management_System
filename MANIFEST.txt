@@ -1,4 +1,0 @@
-Manifest-Version: 1.5
-Main-Class: PoultryManagementSystem
-Class-Path: lib/sqlite-jdbc-3.51.1.0.jar
-
