@@ -282,8 +282,6 @@ public class Inventory {
 		// Get latest inventory record
 		Object[] latest = inventory[inventory.length - 1];
 		
-		// Debug: Print what we're getting from the database
-		System.out.println("[Debug] Inventory record: " + Arrays.toString(latest));
 		
 		// Extract values based on your database structure
 		int currentBirdStock = 0;
@@ -317,51 +315,39 @@ public class Inventory {
 		}
 		
 		// Define thresholds
-		final int MIN_BIRD_STOCK = 100;	  // minimum birds
-		final int MIN_EGG_STOCK = 100;	   // minimum eggs
-		final double MIN_FEED_STOCK = 100.0; // minimum feed in units
-		
-		System.out.println("\n" + "-".repeat(60));
-		System.out.println("CURRENT STOCK STATUS");
-		System.out.println("-".repeat(60));
+		final int MIN_BIRD_STOCK = 50;	  // minimum birds
+		final int MIN_EGG_STOCK = 30;	   // minimum eggs
+		final double MIN_FEED_STOCK = 25.0; // minimum feed in units
 		
 		boolean lowStockFound = false;
 		
 		// Check bird stock
-		System.out.printf("Birds: %d/%d ", currentBirdStock, MIN_BIRD_STOCK);
 		if (currentBirdStock < MIN_BIRD_STOCK) {
-			System.out.println("⚠️ LOW STOCK!");
+			System.out.println("[Notification] LOW STOCK!");
+			System.out.printf("Birds: %d/%d ", currentBirdStock, MIN_BIRD_STOCK);
 			lowStockFound = true;
-		} else {
-			System.out.println("✓ OK");
 		}
 		
 		// Check egg stock
-		System.out.printf("Eggs: %d/%d ", currentEggStock, MIN_EGG_STOCK);
 		if (currentEggStock < MIN_EGG_STOCK) {
-			System.out.println("⚠️ LOW STOCK!");
+			System.out.println("[Notification] LOW STOCK!");
+			System.out.printf("Eggs: %d/%d ", currentEggStock, MIN_EGG_STOCK);
 			lowStockFound = true;
-		} else {
-			System.out.println("✓ OK");
 		}
 		
 		// Check feed stock
-		System.out.printf("Feed: %.1f/%.1f ", currentFeedStock, MIN_FEED_STOCK);
 		if (currentFeedStock < MIN_FEED_STOCK) {
-			System.out.println("⚠️ LOW STOCK!");
+			System.out.println("[Notification] LOW STOCK!");
+			System.out.printf("Feed: %.1f/%.1f ", currentFeedStock, MIN_FEED_STOCK);
 			lowStockFound = true;
-		} else {
-			System.out.println("✓ OK");
 		}
 		
 		// Show summary
 		if (lowStockFound) {
-			System.out.println("\n⚠️ ACTION REQUIRED: Some stock levels are below minimum!");
-			System.out.println("   Please add stock in Inventory Management.");
+			System.out.println("\n[Notification] ACTION REQUIRED: Some stock levels are below minimum!");
+			System.out.println("[Notification] Please add stock in Inventory Management.");
 		} else {
-			System.out.println("\n✓ All stock levels are adequate.");
+			System.out.println("\n[Notification] All stock levels are adequate.");
 		}
-		
-		System.out.println("-".repeat(60));
 	}
 }

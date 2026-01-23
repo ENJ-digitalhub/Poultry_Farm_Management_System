@@ -50,7 +50,7 @@ public class Database {
 					checkIfTablesExist(conn);
 				}
 				
-				System.out.println("Connected to database successfully (attempt " + attempt + ")");
+				System.out.println("[Notification] Connected to database successfully (attempt " + attempt + ")");
 				attempt++;
 				return conn;
 				
@@ -101,7 +101,7 @@ public class Database {
 					isInitialized = true;
 				} else {
 					// Tables already exist
-					System.out.println("Database tables are ready");
+					System.out.println("[Notification] Database tables are ready");
 					isInitialized = true;
 				}
 			}

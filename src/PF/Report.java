@@ -14,7 +14,7 @@ public class Report{
 		System.out.println("\n"+"=".repeat(60)+"\n");
 		System.out.println(tools.center("REPORT MENU",50));
 		System.out.println("\n"+"=".repeat(60)+"\n");
-		System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n6.Egg Graph\n0. Back\nOption: ");
+		System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n0. Back\nOption: ");
 		int option=-1;
 		while(true){
 			try{
@@ -53,10 +53,10 @@ public class Report{
 					tools.clearScreen();
 					statsSummary(homeCallBack);
 					break;
-					case 6:
+				/*case 6:
 					tools.clearScreen();
 					eggGraph(homeCallBack);
-					break;
+					break;*/
 				default:
 					tools.clearScreen();
 					System.out.println("Invalid selection");
@@ -305,6 +305,14 @@ public class Report{
 		}
 	}
 	public static void eggGraph(Runnable homeCallBack) {
+		// Fetch all farm records from the database
+		Object[][] records = tools.getAllRecords("farm_records");
+		
+		if (records.length == 0) {
+			System.out.println("No records found.");
+			System.out.println("-".repeat(60));
+			return;
+		}
 		System.out.println("Egg Production Graph (Last 7 Days)");
 		System.out.println("\n" + "-".repeat(60));
 		
@@ -316,15 +324,6 @@ public class Report{
 		for (int i = 6; i >= 0; i--) {
 			LocalDate date = today.minusDays(i);
 			dailyEggs.put(date.toString(), 0);
-		}
-		
-		// Fetch all farm records from the database
-		Object[][] records = tools.getAllRecords("farm_records");
-		
-		if (records.length == 0) {
-			System.out.println("No records found.");
-			System.out.println("-".repeat(60));
-			return;
 		}
 		
 		// Calculate eggs for each of the last 7 days
@@ -376,7 +375,7 @@ public class Report{
 			int barLength = maxEggs > 0 ? (int) ((double) eggs / maxEggs * 50) : 0;
 			
 			// Format: Date | Eggs | Bar Graph
-			System.out.printf("%-10s | %5d | %s%n", 
+			System.out.printf("%-10s \t| %5d | %s%n", 
 				date, 
 				eggs,
 				"*".repeat(barLength));

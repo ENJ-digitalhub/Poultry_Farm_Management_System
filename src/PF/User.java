@@ -184,7 +184,7 @@ public class User{
 				userLastName = rs.getString("lastname");
 				userUserName= rs.getString("username");
 				
-				System.out.println("Login successful!");
+				System.out.println("[Notification] Login successful!");
 				System.out.println("Welcome back " + userFirstName + " " + userLastName + "!");
 				System.out.println("Press ENTER to continue...");
 				read.nextLine().trim();
@@ -194,7 +194,7 @@ public class User{
 				
 			} else {
 				// Login failed - wrong username or PIN
-				System.out.println("Login failed! Username or PIN incorrect.");
+				System.out.println("[Notification] Login failed! Username or PIN incorrect.");
 				System.out.println("Press ENTER to try registration instead...");
 				read.nextLine().trim();
 				
@@ -205,11 +205,11 @@ public class User{
 		} catch (SQLException e) {
 			// Handle database errors
 			if (e.getMessage().contains("no such table")) {
-				System.out.println("Database tables not found.");
-				System.out.println("System will create them automatically.");
-				System.out.println("Please try registration first to create tables.");
+				System.out.println("[Notification] Database tables not found.");
+				System.out.println("[Notification] System will create them automatically.");
+				System.out.println("[Notification] Please try registration first to create tables.");
 			} else {
-				System.out.println("Login error occurred: " + e.getMessage());
+				System.out.println("[Notification] Login error occurred: " + e.getMessage());
 			}
 			
 			System.out.println("Press ENTER to try registration...");
