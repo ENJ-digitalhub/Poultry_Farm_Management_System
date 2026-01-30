@@ -148,7 +148,8 @@ public class Report{
 		
 		for(ArrayList<Object> r : allRecords){
 			if(r.size() > 5){ // Check if record has created_at
-				String recordDate = r.get(5).toString().split(" ")[0];
+				String recordDate = r.get(1).toString();
+				//System.out.println(r);
 				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
 					monthlyRecords.add(r);
 				}
@@ -159,7 +160,7 @@ public class Report{
 			System.out.println("No record found.");
 		} else {
 			int totalEggs=0,totalDeaths=0,highestEgg=0;
-			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(1).toString()) : 0;
+			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(2).toString()) : 0;
 			double totalFeeds=0;
 			String highestEggDate="",lowestEggDate="";
 			
@@ -169,12 +170,12 @@ public class Report{
 
 			for(ArrayList<Object> r : monthlyRecords){
 				if(r.size() > 3){
-					int eggs = Integer.parseInt(r.get(1).toString());
+					int eggs = Integer.parseInt(r.get(2).toString());
 					totalEggs+=eggs;
-					totalFeeds+=Double.parseDouble(r.get(2).toString());
-					totalDeaths+=Integer.parseInt(r.get(3).toString());
+					totalFeeds+=Double.parseDouble(r.get(4).toString());
+					totalDeaths+=Integer.parseInt(r.get(5).toString());
 					
-					String currentDate = r.get(5).toString().split(" ")[0];
+					String currentDate = r.get(1).toString().split(" ")[0];
 					
 					if(eggs>highestEgg){ 
 						highestEgg=eggs; 
@@ -189,8 +190,8 @@ public class Report{
 
 			System.out.println("--- Monthly Report ("+time.getMonth()+" "+time.getYear()+") ---");
 			System.out.println("\nTotal Crates(Eggs)\t: "+totalEggs/30 + "(" +totalEggs%30+ ")" );
-			System.out.println("Total Feeds\t: "+totalFeeds);
-			System.out.println("Total Deaths\t: "+totalDeaths);
+			System.out.println("Total Feeds\t\t: "+totalFeeds);
+			System.out.println("Total Deaths\t\t: "+totalDeaths);
 			System.out.println("\nBest Production Day\t: "+highestEggDate+" ("+highestEgg/30+" crate(s) "+highestEgg%30+" egg(s))");
 			System.out.println("Worst Production Day\t: "+lowestEggDate+" ("+lowestEgg/30+" crate(s) "+lowestEgg%30+" egg(s))");
 		}
