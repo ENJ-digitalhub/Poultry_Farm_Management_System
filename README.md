@@ -44,25 +44,13 @@
 # 1. Download and extract the project files
 # 2. Open Command Prompt / Terminal in the project root folder
 # 3. Run the application
-java -jar PM_System.jar
+java -cp "bin;lib\sqlite-jdbc-3.51.1.0.jar" PoultryManagementSystem
 ```
 ### **For Developers (Compile from Source):**
 ```bash
-# Compile the project (Windows)
-javac -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java
+# Compile and run the project (Windows)
+javac -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java && java -cp "bin;lib\sqlite-jdbc-3.51.1.0.jar" PoultryManagementSystem
 
-# Compile the project (macOS/Linux)
-javac -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" -d bin src/*.java src/PF/*.java
-
-# Run the application (Windows)
-java -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" Main
-# OR (if Main is inside PF package)
-java -cp "bin;lib/sqlite-jdbc-3.51.1.0.jar" PF.Main
-
-# Run the application (macOS/Linux)
-java -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" Main
-# OR
-java -cp "bin:lib/sqlite-jdbc-3.51.1.0.jar" PF.Main
 ```
 ---
 
