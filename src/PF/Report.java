@@ -117,9 +117,9 @@ public class Report{
 
 		for(ArrayList<Object> r : weeklyRecords){
 			if(r.size() > 3){ // Check if record has enough data
-				totalEggs+=Integer.parseInt(r.get(1).toString());
-				totalFeeds+=Double.parseDouble(r.get(2).toString());
-				totalDeaths+=Integer.parseInt(r.get(3).toString());
+				totalEggs+=Integer.parseInt(r.get(2).toString());
+				totalFeeds+=Double.parseDouble(r.get(4).toString());
+				totalDeaths+=Integer.parseInt(r.get(5).toString());
 			}
 		}
 
@@ -214,20 +214,20 @@ public class Report{
 
 		for(ArrayList<Object> r : records){
 			if(r.size() > 5){
-				String recordDate = r.get(5).toString().split(" ")[0];
+				String recordDate = r.get(1).toString();
 				
 				if(recordDate.equals(time.toLocalDate().toString())) {
-					todayEgg = Integer.parseInt(r.get(1).toString());
+					todayEgg = Integer.parseInt(r.get(2).toString());
 				}
 
 				for(int i=0;i<7;i++){
 					if(recordDate.equals(time.toLocalDate().minusDays(i).toString())){
-						thisWeekEgg+=Integer.parseInt(r.get(1).toString());
+						thisWeekEgg+=Integer.parseInt(r.get(2).toString());
 					}
 				}
 
 				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
-					thisMonthEgg+=Integer.parseInt(r.get(1).toString());
+					thisMonthEgg+=Integer.parseInt(r.get(2).toString());
 				}
 			}
 		}
@@ -255,7 +255,7 @@ public class Report{
 		
 		for(ArrayList<Object> r : allRecords){
 			if(r.size() > 5){
-				String recordDate = r.get(5).toString().split(" ")[0];
+				String recordDate = r.get(1).toString();
 				if(tools.monthsOfTheYear(recordDate).equals(time.getMonth().toString())){
 					monthlyRecords.add(r);
 				}
@@ -266,17 +266,17 @@ public class Report{
 			System.out.println("No record found.");
 		} else {
 			int highestEgg=0;
-			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(1).toString()) : 0;
+			int lowestEgg = monthlyRecords.size() > 0 ? Integer.parseInt(monthlyRecords.get(0).get(2).toString()) : 0;
 			String highestEggDate="",lowestEggDate="";
 			
 			if(monthlyRecords.size() > 0){
-				lowestEggDate = monthlyRecords.get(0).get(5).toString().split(" ")[0];
+				lowestEggDate = monthlyRecords.get(0).get(1).toString();
 			}
 
 			for(ArrayList<Object> r : monthlyRecords){
 				if(r.size() > 1){
-					int eggs = Integer.parseInt(r.get(1).toString());
-					String currentDate = r.get(5).toString().split(" ")[0];
+					int eggs = Integer.parseInt(r.get(2).toString());
+					String currentDate = r.get(1).toString();
 					
 					if(eggs>highestEgg){ 
 						highestEgg=eggs; 
