@@ -68,7 +68,7 @@ public class Database {
 				}
 				
 				if (attempt < maxRetries) {
-					System.out.println("Retrying in " + (retryDelay/1000) + " seconds...");
+					System.out.println("Retrying in " + (retryDelay/600) + " seconds...");
 					try {
 						Thread.sleep(retryDelay);
 						retryDelay *= 2; // Exponential backoff
@@ -176,6 +176,37 @@ public class Database {
 				);
 			""";
 			stmt.execute(inventoryTable);
+			
+			// Create expense table with TEXT created_by
+			String expenseTable = """
+				CREATE TABLE IF NOT EXISTS expense (
+					expense_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					date TEXT NOT NULL DEFAULT CURRENT_DATE ,
+					category TEXT NOT NULL,
+					item TEXT NOT NULL,
+					quantity INTEGER NOT NULL,
+					unitprice INTEGER NOT NULL,
+					total INTEGER NOT NULL,
+					created_by TEXT NOT NULL, 
+					created_at TEXT DEFAULT CURRENT_TIMESTAMP
+				);
+			""";
+			stmt.execute(expenseTable);
+			
+			// Create expense table with TEXT created_by
+			String salesTable = """
+				CREATE TABLE IF NOT EXISTS sales (
+					sales_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					date TEXT NOT NULL DEFAULT CURRENT_DATE ,
+					item TEXT NOT NULL,
+					quantity INTEGER NOT NULL,
+					unitprice INTEGER NOT NULL,
+					total INTEGER NOT NULL,
+					created_by TEXT NOT NULL, 
+					created_at TEXT DEFAULT CURRENT_TIMESTAMP
+				);
+			""";
+			stmt.execute(salesTable);
 
 			System.out.println("All database tables created successfully");
 

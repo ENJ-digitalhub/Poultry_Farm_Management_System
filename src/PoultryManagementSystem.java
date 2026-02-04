@@ -12,7 +12,7 @@ public class PoultryManagementSystem{
 	static SystemUtils tools = new SystemUtils();
 	static FarmRecord record = new FarmRecord();
 	static User user = new User();
-	static Inventory stock = new Inventory();
+	static Finance funds = new Finance();
 	static Report report = new Report();
 	static Help help = new Help();
 	
@@ -29,10 +29,10 @@ public class PoultryManagementSystem{
 		read.nextLine();
 		tools.clearScreen();
 		
-		System.out.println("\n"+"=".repeat(60)+"\n");
-		System.out.println(tools.center("Poultry Farm Management System",50)+"\n");
-		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),50));
-		System.out.println("\n"+"=".repeat(60)+"\n");
+		System.out.println("\n"+"=".repeat(100)+"\n");
+		System.out.println(tools.center("Poultry Farm Management System",100)+"\n");
+		System.out.println(tools.center("Date: "+time.toLocalDate()+"\tTime: "+time.toLocalTime(),100));
+		System.out.println("\n"+"=".repeat(100)+"\n");
 		System.out.print("1. Login\n2. Register\n0. Exit\nOption: ");
 		int option = -1;
 		while(true){
@@ -72,14 +72,14 @@ public class PoultryManagementSystem{
 		}
 	}
 	public void home(){
-		stock.checkLowStock();
-		System.out.println("\n"+"=".repeat(60)+"\n");
-		System.out.println(tools.center("POULTRY DASHBOARD", 50));
-		System.out.println(tools.center("HOME MENU",50));
-		System.out.println("\n"+"=".repeat(60)+"\n");
+		funds.checkLowStock();
+		System.out.println("\n"+"=".repeat(100)+"\n");
+		System.out.println(tools.center("POULTRY DASHBOARD", 100));
+		System.out.println(tools.center("HOME MENU",100));
+		System.out.println("\n"+"=".repeat(100)+"\n");
 		System.out.print(
 			"1. Farm Management\n"+
-			"2. Stock Management\n"+
+			"2. Finance\n"+
 			"3. Report\n"+
 			"4. Help\n"+
 			"0. Logout\n"+
@@ -119,7 +119,7 @@ public class PoultryManagementSystem{
 				//Stock
 				case 2:
 					tools.clearScreen();
-					Inventory.stockMenu(this::home);
+					funds.financeMenu(this::home);
 					break;
 				//Report
 				case 3:

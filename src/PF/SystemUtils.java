@@ -50,27 +50,33 @@ public class SystemUtils {
 			isConfirm = false;
 		} else {
 			clearScreen();
-			System.out.println("Invalid Input");
+			System.err.println("Invalid input");
 			confirm(x);
 		}
 		return isConfirm;
 	}
 	public static String encrypt(String pin) {
-		if (pin.length() != 4) throw new IllegalArgumentException("PIN must be 4 digits");
-		int d1 = Integer.parseInt("" + pin.charAt(0));
-		int d2 = Integer.parseInt("" + pin.charAt(1));
-		int d3 = Integer.parseInt("" + pin.charAt(2));
-		int d4 = Integer.parseInt("" + pin.charAt(3));
+		int encryptedPin=0000;
+		try{
+			if (pin.length() != 4) throw new IllegalArgumentException("PIN must be 4 digits");
+			int d1 = Integer.parseInt("" + pin.charAt(0));
+			int d2 = Integer.parseInt("" + pin.charAt(1));
+			int d3 = Integer.parseInt("" + pin.charAt(2));
+			int d4 = Integer.parseInt("" + pin.charAt(3));
 
-		int temp = d1; d1 = d3; d3 = temp;
-		temp = d2; d2 = d4; d4 = temp;
+			int temp = d1; d1 = d3; d3 = temp;
+			temp = d2; d2 = d4; d4 = temp;
 
-		d1 = (d1 + 7) % 10;
-		d2 = (d2 + 7) % 10;
-		d3 = (d3 + 7) % 10;
-		d4 = (d4 + 7) % 10;
+			d1 = (d1 + 7) % 10;
+			d2 = (d2 + 7) % 10;
+			d3 = (d3 + 7) % 10;
+			d4 = (d4 + 7) % 10;
 
-		int encryptedPin = (d1 * 1000) + (d2 * 100) + (d3 * 10) + d4;
+			encryptedPin = (d1 * 1000) + (d2 * 100) + (d3 * 10) + d4;
+		}
+		catch (Exception e){
+			System.err.println("PIN must be 4 digits");
+		}
 		return String.format("%04d", encryptedPin);
 	}
 	public static String decrypt(String ePin) {
@@ -197,6 +203,57 @@ public class SystemUtils {
 				pstmt.executeUpdate();
 				System.out.println("Farm record added Succesfully. " );
 				
+			}else if (tableName.equalsIgnoreCase("expense")) {
+				// Finance has: expense_id, date, category, item, quantity, unitprice, total, created_by, created_at
+				// We need to provide: date, category, item, quantity, unitprice, total, created_by
+				String sql = "INSERT INTO expense (date, category, item, quantity, unitprice, total, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				if (values.length == 6) {
+					// User provided:, date, category, item, quantity, unitprice, total,
+					pstmt.setObject(1, values[0]);
+					pstmt.setObject(2, values[1]);
+					pstmt.setObject(3, values[2]);
+					pstmt.setObject(4, values[3]);
+					pstmt.setObject(5, values[4]);
+					pstmt.setObject(6, values[5]);
+					pstmt.setString(7, currentUsername);
+				} else if (values.length == 7) {
+					// User already included created_by
+					for (int i = 0; i < 7; i++) pstmt.setObject(i + 1, values[i]);
+				} else {
+					System.err.println("Wrong number of values for expense table. Expected 6 or 7, got " + values.length);
+					return;
+				}
+				
+				pstmt.executeUpdate();
+				System.out.println("expense record added Succesfully. " );
+				
+			}else if (tableName.equalsIgnoreCase("sales")) {
+				// Sales has: sales_id, date, item, quantity, unitprice, total, created_by, created_at
+				// We need to provide: date, item, quantity, unitprice, total, created_by
+				String sql = "INSERT INTO sales (date, item, quantity, unitprice, total, created_by) VALUES (?, ?, ?, ?, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				if (values.length == 5) {
+					// User provided:, date, category, item, quantity, unitprice, total,
+					pstmt.setObject(1, values[0]);
+					pstmt.setObject(2, values[1]);
+					pstmt.setObject(3, values[2]);
+					pstmt.setObject(4, values[3]);
+					pstmt.setObject(5, values[4]);
+					pstmt.setString(6, currentUsername);
+				} else if (values.length == 6) {
+					// User already included created_by
+					for (int i = 0; i < 6; i++) pstmt.setObject(i + 1, values[i]);
+				} else {
+					System.err.println("Wrong number of values for sales table. Expected 5 or 6, got " + values.length);
+					return;
+				}
+				
+				pstmt.executeUpdate();
+				System.out.println("Sales record added Succesfully. " );
+				
 			} else {
 				// For other tables: use original logic
 				String placeholders = String.join(",", Collections.nCopies(values.length, "?"));
@@ -320,19 +377,35 @@ public class SystemUtils {
 	}
 	/** Gets all records as Object[][] (for FarmRecord view) */
 	public static Object[][] getAllRecords(String tableName) {
-		ArrayList<Object[]> list = new ArrayList<>();
-		try (Connection conn = Database.connect();
-			 Statement stmt = conn.createStatement();
-			 ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName)) {
-			int cols = rs.getMetaData().getColumnCount();
-			while (rs.next()) {
-				Object[] row = new Object[cols];
-				for (int i = 1; i <= cols; i++) row[i-1] = rs.getObject(i);
-				list.add(row);
-			}
-		} catch (SQLException e) { e.printStackTrace(); }
-		return list.toArray(new Object[0][]);
-	}
+    ArrayList<Object[]> list = new ArrayList<>();
+
+    String sql;
+    if (tableName.equalsIgnoreCase("expense2")) {
+		tableName="expense";
+        sql = "SELECT category, SUM(quantity) FROM " + tableName + " GROUP BY category";
+    } else {
+        sql = "SELECT * FROM " + tableName;
+    }
+
+    try (Connection conn = Database.connect();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+
+        int cols = rs.getMetaData().getColumnCount();
+        while (rs.next()) {
+            Object[] row = new Object[cols];
+            for (int i = 1; i <= cols; i++) {
+                row[i - 1] = rs.getObject(i);
+            }
+            list.add(row);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list.toArray(new Object[0][]);
+}
 	/** Gets single record by date */
 	public static Object[] getRecordByDate(String tableName, String dateColumn, String date) {
 		try (Connection conn = Database.connect()) {

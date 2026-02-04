@@ -9,9 +9,9 @@ public class FarmRecord {
 	static LocalDateTime time = LocalDateTime.now();
 
 	public static void farmMenu(Runnable homeCallBack) {
-		System.out.println("\n" + "=".repeat(60) + "\n");
-		System.out.println(tools.center("FARM MANAGEMENT MENU", 50));
-		System.out.println("\n" + "=".repeat(60) + "\n");
+		System.out.println("\n" + "=".repeat(100) + "\n");
+		System.out.println(tools.center("FARM MANAGEMENT MENU", 100));
+		System.out.println("\n" + "=".repeat(100) + "\n");
 		System.out.print("1. Record Today's Farm Data\n2. View Farm Record History\n3. Update Existing Farm Record\n0. Back\nOption: ");
 
 		int option = -1;
@@ -21,7 +21,7 @@ public class FarmRecord {
 				read.nextLine().trim();
 				break;
 			} catch (Exception e) {
-				System.out.println("\nInvalid input! Please enter numbers only.");
+				System.err.println("\nInvalid input! Please enter numbers only.");
 				read.nextLine().trim();
 				System.out.print("Option: ");
 			}
@@ -47,7 +47,7 @@ public class FarmRecord {
 				break;
 			default:
 				tools.clearScreen();
-				System.out.println("Invalid selection");
+				System.err.println("Invalid selection");
 				farmMenu(homeCallBack);
 				break;
 		}
@@ -87,7 +87,7 @@ public class FarmRecord {
 					return;
 				} else {
 					tools.clearScreen();
-					System.out.println("Invalid Input");
+					System.err.println("Invalid input");
 				}
 			}
 		}
@@ -95,8 +95,8 @@ public class FarmRecord {
 		// Eggs input - Your original crate format logic
 		while (!isConfirm) {
 			System.out.print("Input number of Crate(s) [Eg. 5_3-> 5 crates,3 eggs]: ");
-			eggInput = read.nextLine().trim();
 			try {
+				eggInput = read.nextLine().trim();
 				String[] parts = eggInput.split("_");
 				int crates = Integer.parseInt(parts[0]);
 				int pieces = Integer.parseInt(parts[1]);
@@ -111,7 +111,7 @@ public class FarmRecord {
 					isConfirm = tools.confirm(eggInput);
 				}
 			} catch (Exception e) {
-				System.out.println("Invalid format. Use crate_eggs format.");
+				System.err.println("Invalid format. Use crate_eggs format.");
 			}
 		}
 		
@@ -220,7 +220,7 @@ public class FarmRecord {
 			tools.clearScreen();
 			System.out.println("--- Farm Record History ---");
 			System.out.println("\nDate\t|Crates(Eggs)\t|Feed\t|Death\t|Comment");
-			System.out.println("-".repeat(60));
+			System.out.println("-".repeat(100));
 
 			// Get current page - your original display format
 			int startIdx = (page - 1) * pageSize;
@@ -240,7 +240,7 @@ public class FarmRecord {
 						(record[4] != null ? record[4].toString() : ""));
 			}
 
-			System.out.println("-".repeat(60));
+			System.out.println("-".repeat(100));
 			System.out.println("\nPage " + page + "/" + totalPages);
 			System.out.println("N. Next | P. Previous | 0. Back");
 			System.out.print("Option: ");
@@ -270,7 +270,7 @@ public class FarmRecord {
 		// Get record ID to edit
 		System.out.println("\nRecent Records:");
 		System.out.println("ID\tDate\t\tCrates(Eggs)\tBroken\tFeed\tDeaths");
-		System.out.println("-".repeat(60));
+		System.out.println("-".repeat(100));
 		int showCount = Math.min(5, records.length);
 		for (int i = 0; i < showCount; i++) {
 			Object[] record = records[i];
@@ -334,13 +334,13 @@ public class FarmRecord {
 		int eggNo = 0;
 		while (!isConfirm) {
 			System.out.print("Input number of Crate(s) [Eg. 5_3-> 5 crates,3 eggs]: ");
-			String eggInput = read.nextLine().trim();
 			try {
+				String eggInput = read.nextLine().trim();
 				String[] parts = eggInput.split("_");
 				int crates = Integer.parseInt(parts[0]);
 				int pieces = Integer.parseInt(parts[1]);
 
-				if (crates < 0 || pieces < 0) System.out.println("Invalid Input. Positive values only");
+				if (crates < 0 || pieces < 0) System.err.println("Invalid Input. Positive values only");
 				else {
 					if (pieces >= 30) {
 						crates += pieces / 30;

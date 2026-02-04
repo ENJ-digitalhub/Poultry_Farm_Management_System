@@ -9,9 +9,9 @@ public class Help {
 	public static void helpMenu(Runnable homeCallBack) {
 		while (true) {
 			tools.clearScreen();
-			System.out.println("\n" + "=".repeat(60) + "\n");
-			System.out.println(tools.center("HELP & SUPPORT CENTER", 50));
-			System.out.println("\n" + "=".repeat(60) + "\n");
+			System.out.println("\n" + "=".repeat(100) + "\n");
+			System.out.println(tools.center("HELP & SUPPORT CENTER", 100));
+			System.out.println("\n" + "=".repeat(100) + "\n");
 			System.out.println(
 				"1. Quick Start Guide\n" +
 				"2. Farm Management Help\n" +
@@ -95,7 +95,7 @@ public class Help {
 			
 			"EGG INPUT FORMAT:\n" +
 			"- Format: [crates]_[loose eggs]\n" +
-			"- Example: 5_3 = 5 crates (150 eggs) + 3 loose eggs = 153 total\n" +
+			"- Example: 5_3 = 5 crates (1100 eggs) + 3 loose eggs = 153 total\n" +
 			"- 1 crate = 30 eggs\n\n" +
 			
 			"Press ENTER to return to Help Menu..."
@@ -371,7 +371,7 @@ public class Help {
 			"- Database: SQLite 3.45.2\n" +
 			"- Storage: Local file system\n" +
 			"- Interface: Command Line (CLI)\n" +
-			"- Codebase: ~2,500 lines\n\n" +
+			"- Codebase: ~2,1000 lines\n\n" +
 			
 			"SYSTEM CAPABILITIES:\n" +
 			"- Records: 10,000+ efficiently\n" +

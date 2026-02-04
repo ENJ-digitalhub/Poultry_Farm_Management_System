@@ -11,9 +11,9 @@ public class Report{
 	static ArrayList<String> farmRecords = new ArrayList<>();
 
 	public static void reportMenu(Runnable homeCallBack){
-		System.out.println("\n"+"=".repeat(60)+"\n");
-		System.out.println(tools.center("REPORT MENU",50));
-		System.out.println("\n"+"=".repeat(60)+"\n");
+		System.out.println("\n"+"=".repeat(100)+"\n");
+		System.out.println(tools.center("REPORT MENU",100));
+		System.out.println("\n"+"=".repeat(100)+"\n");
 		System.out.print("1. Daily Report ("+time.toLocalDate()+")\n2. Weekly Report (Last 7 Days)\n3. Monthly Report ("+time.getMonth()+" "+time.getYear()+")\n4. Summary Report\n5. Statistics Summary\n0. Back\nOption: ");
 		int option=-1;
 		while(true){
@@ -311,11 +311,11 @@ public class Report{
 		
 		if (records.length == 0) {
 			System.out.println("No records found.");
-			System.out.println("-".repeat(60));
+			System.out.println("-".repeat(100));
 			return;
 		}
 		System.out.println("Egg Production Graph (Last 7 Days)");
-		System.out.println("\n" + "-".repeat(60));
+		System.out.println("\n" + "-".repeat(100));
 		
 		// Get today's date
 		LocalDate today = LocalDate.now();
@@ -366,14 +366,14 @@ public class Report{
 		
 		// Print graph
 		System.out.println("Date\t\t| Eggs | Graph");
-		System.out.println("-".repeat(60));
+		System.out.println("-".repeat(100));
 		
 		for (Map.Entry<String, Integer> entry : dailyEggs.entrySet()) {
 			String date = entry.getKey();
 			int eggs = entry.getValue();
 			
-			// Calculate bar length (scale to 50 characters max)
-			int barLength = maxEggs > 0 ? (int) ((double) eggs / maxEggs * 50) : 0;
+			// Calculate bar length (scale to 100 characters max)
+			int barLength = maxEggs > 0 ? (int) ((double) eggs / maxEggs * 100) : 0;
 			
 			// Format: Date | Eggs | Bar Graph
 			System.out.printf("%-10s \t| %5d | %s%n", 
@@ -382,8 +382,8 @@ public class Report{
 				"*".repeat(barLength));
 		}
 		
-		System.out.println("-".repeat(60));
-		System.out.println("Scale: 1 '*' = " + Math.max(1, maxEggs / 50) + " eggs");
-		System.out.println("\n" + "-".repeat(60) + "\n");
+		System.out.println("-".repeat(100));
+		System.out.println("Scale: 1 '*' = " + Math.max(1, maxEggs / 100) + " eggs");
+		System.out.println("\n" + "-".repeat(100) + "\n");
 	}
 }

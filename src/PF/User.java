@@ -131,23 +131,14 @@ public class User{
 	public static void login(Runnable startupPageCallBack,Runnable homecallback){
 		System.out.println("--- Login ---");
 		boolean recordFound=false; 
-		isConfirm=false;
 		
-		// Get username with confirmation
-		while(isConfirm==false){
-			System.out.print("Username:  ");
-			userName = read.nextLine().trim();
-			isConfirm=tools.confirm(userName);
-			userName=userName.toLowerCase();
-		}
-		
-		// Get PIN with confirmation
-		isConfirm=false;
-		while(isConfirm==false){
-			System.out.print("Pin:  ");
-			pin = read.nextLine().trim();
-			isConfirm=tools.confirm(pin);
-		}
+		System.out.print("Username:  ");
+		userName = read.nextLine().trim();
+		userName=userName.toLowerCase();
+		System.out.print("Pin:  ");
+		pin = read.nextLine().trim();
+		tools.clearScreen();
+
 		
 		// Encrypt the PIN to match what's in database
 		String encryptedPin = tools.encrypt(pin);
